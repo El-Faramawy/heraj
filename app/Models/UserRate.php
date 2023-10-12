@@ -5,14 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Following extends Model
+class UserRate extends Model
 {
     use HasFactory;
-
-    protected $table = 'followings';
     protected $guarded = [];
+    protected $table = 'user_rates';
 
-    public function following_user(){
-        return $this->belongsTo(User::class);
-    }
 }

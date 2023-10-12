@@ -25,9 +25,12 @@ class HomeController extends Controller
         $data = [];
         $slider = Product::where('has_ad', 1)->select('id', 'image');
         $data['sliders'] = $this->apiResponse($slider);
-        $products = Product::inRandomOrder()->limit(20)/*->select('id','image','name','created_at','price')*/
+        $products = Product::where('type',ProductTypeEnum::USER)->inRandomOrder()->limit(20)/*->select('id','image','name','created_at','price')*/
+        ->with('user', 'category', 'sub_category', 'city');
+        $company_products = Product::where('type',ProductTypeEnum::COMPANY)->inRandomOrder()->limit(20)/*->select('id','image','name','created_at','price')*/
         ->with('user', 'category', 'sub_category', 'city');
         $data['products'] = $this->apiResponse($products);
+        $data['company_products'] = $this->apiResponse($company_products);
         $categories = Category::with($this->categoryRelations());
         $data['categories'] = $this->apiResponse($categories);
         $cities = City::with($this->cityRelations());
@@ -52,6 +55,9 @@ class HomeController extends Controller
         }
         if (isset($request->area_id)) {
             $products->where('area_id', $request->area_id);
+        }
+        if (isset($request->text)) {
+            $products->where('name','like','%'. $request->text.'%');
         }
         if (isset($request->type)) {
             $products->where('type', $request->type);

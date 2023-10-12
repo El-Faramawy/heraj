@@ -22,7 +22,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 /* ---------------------- setting -------------------*/
 Route::get('setting','SettingController@setting');
 
-
+/* ---------------------- contact -------------------*/
+Route::post('contact_us','ContactController@contact_us');
 
 
 require __DIR__ . '/Api/user_api.php';

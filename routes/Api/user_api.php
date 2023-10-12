@@ -7,6 +7,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
     /* ---------------------- Authentication -------------------*/
     Route::post('login','AuthController@login');
     Route::post('register', 'AuthController@register');
+    Route::get('checkPhone', 'AuthController@checkPhone');
 
     /* ---------------------- home -------------------*/
     Route::get('home','HomeController@index');
@@ -33,7 +34,18 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
         /* ---------------------- product -------------------*/
         Route::group(['prefix' => 'product'], function () {
             Route::get('one_product', 'ProductController@one_product');
+            Route::get('user_products', 'ProductController@user_products');
             Route::post('store', 'ProductController@store');
+            Route::post('update', 'ProductController@update');
+            Route::post('delete', 'ProductController@delete');
+        });
+        /* ---------------------- company -------------------*/
+        Route::group(['prefix' => 'company'], function () {
+            Route::post('store', 'CompanyController@store');
+            Route::get('one_company', 'CompanyController@one_company');
+            Route::get('product_search', 'CompanyController@product_search');
+            Route::post('add_rate','CompanyController@add_rate');
+            Route::get('followers', 'CompanyController@followers');
         });
 
         /* ---------------------- follow -------------------*/

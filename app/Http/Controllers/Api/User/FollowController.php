@@ -17,12 +17,13 @@ class FollowController extends Controller
     public function add_delete_follow(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'product_id' => 'required|exists:products,id',
+            'product_id' => 'exists:products,id',
+            'following_user_id' => 'exists:users,id',
         ]);
         if ($validator->fails()) {
             return $this->apiResponse(null, $validator->errors(), 'simple', '422');
         }
-        $data = $request->only('product_id');
+        $data = $request->only('product_id','following_user_id');
         $data['follower_user_id'] = user_api()->user()->id;
         $follow = Following::where($data);
 
@@ -34,5 +35,6 @@ class FollowController extends Controller
 
         return $this->apiResponse(null, 'done', 'simple');
     }
+
 
 }

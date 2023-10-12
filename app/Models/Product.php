@@ -9,7 +9,7 @@ class Product extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $appends =['is_favourite','is_follow'];
+    protected $appends =['is_favourite','is_follow','rate'];
 
     public function getImageAttribute(){
         return  get_file($this->attributes['image']);
@@ -74,6 +74,15 @@ class Product extends Model
     {
         return $this->hasMany(ProductComment::class);
     }
-
+    //===================  comments ===========================
+    public function getRateAttribute(){
+        $rates = Rate::where('product_id',$this->attributes['id']);
+        $rates_count = $rates->count();
+        if ($rates_count > 0){
+            $rates_sum = $rates->sum('rate1') + $rates->sum('rate2');
+            return $rates_sum / ($rates_count * 2);
+        }
+        return  0;
+    }
 
 }

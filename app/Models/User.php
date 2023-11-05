@@ -48,6 +48,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     protected $guarded = [];
+    protected $appends = ['package'];
 
     public function getImageAttribute(){
         return  get_file($this->attributes['image']);
@@ -62,6 +63,15 @@ class User extends Authenticatable implements JWTSubject
         $rates = UserRate::where('rated_user_id',$this->attributes['id'])->pluck('rate')->avg();
         return  $rates?:0;
     }
+    public function getPackageAttribute(){
+        $userPackage = UserPackage::where('user_id',$this->attributes['id'])
+            ->where(function ($q){
+                $q->where('start_date','<=',date('Y-m-d'))
+                ->where('end_date','>=',date('Y-m-d'));
+            })
+            ->with('package')->first();
+        return  $userPackage?$userPackage->package:null;
+    }
 
     public function user_products(){
         return $this->hasMany(Product::class)->where('type','user');
@@ -75,6 +85,9 @@ class User extends Authenticatable implements JWTSubject
     }
     public function unread_messages(){
         return $this->hasMany(Chat::class,'user_id')->where(['is_read'=>0,'message_from'=>'user']);
+    }
+    public function verify_images(){
+        return $this->hasOne(VerifyAccountImage::class);
     }
 
 

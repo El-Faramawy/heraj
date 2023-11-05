@@ -11,30 +11,6 @@
                     <form  action="{{route('notifications.store')}}" id="Form" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            <div class="form-group col-12">
-                                <label >نوع الرسالة</label>
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="form-check m-0 ">
-                                        <input class="form-check-input  " type="radio" name="type" value="notification" checked>
-                                        <label class="form-check-label ms-5" style="margin-right: 20px;">
-                                            اشعار
-                                        </label>
-                                    </div>
-                                    <div class="form-check m-0  ms-3" style="margin-left: 30px!important">
-                                        <input class="form-check-input " type="radio" name="type" value="offer" >
-                                        <label class="form-check-label ms-5" style="margin-right: 20px;">
-                                            عرض
-                                        </label>
-                                    </div>
-                                    <div class="form-check m-0  ms-3" style="margin-left: 30px!important">
-                                        <input class="form-check-input " type="radio" name="type" value="reward" >
-                                        <label class="form-check-label ms-5" style="margin-right: 20px;">
-                                            مكافأة
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
                                 <div class="form-group col-12">
                                     <label >عنوان الرسالة</label>
                                     <input type="text" class="form-control form-control-solid" placeholder="عنوان الرسالة" name="title" value=""/>
@@ -59,50 +35,6 @@
                                                 <label class="custom-control custom-checkbox " style="width: 25%">
                                                     <input type="checkbox" class="custom-control-input users" name="users[]" value="{{$user->id}}" >
                                                     <span class="custom-control-label">{{$user->name }}</span>
-                                                </label>
-                                            @endforeach
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="form-group col-12" id="market_div" >
-                                    <label >المطاعم</label>
-                                    <div class="form-group form-elements m-0 my-2">
-                                        <div class="custom-controls-stacked ">
-                                            <label class="custom-control custom-checkbox ">
-                                                <input type="checkbox" class="custom-control-input "  id="checkAllMarkets" >
-                                                <span class="custom-control-label " style="font-weight: bold"> تحديد الكل </span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-elements m-0">
-                                        <div class="custom-controls-stacked row">
-                                            @foreach($markets as $market)
-                                                <label class="custom-control custom-checkbox " style="width: 25%">
-                                                    <input type="checkbox" class="custom-control-input markets" name="markets[]" value="{{$market->id}}" >
-                                                    <span class="custom-control-label">{{$market->name }}</span>
-                                                </label>
-                                            @endforeach
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="form-group col-12" id="delivery_div" >
-                                    <label >المندوبين</label>
-                                    <div class="form-group form-elements m-0 my-2">
-                                        <div class="custom-controls-stacked ">
-                                            <label class="custom-control custom-checkbox ">
-                                                <input type="checkbox" class="custom-control-input "  id="checkAllDeliveies" >
-                                                <span class="custom-control-label " style="font-weight: bold"> تحديد الكل </span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-elements m-0">
-                                        <div class="custom-controls-stacked row">
-                                            @foreach($deliveries as $delivery)
-                                                <label class="custom-control custom-checkbox " style="width: 25%">
-                                                    <input type="checkbox" class="custom-control-input deliveries" name="deliveries[]" value="{{$delivery->id}}" >
-                                                    <span class="custom-control-label">{{$delivery->name }}</span>
                                                 </label>
                                             @endforeach
                                         </div>
@@ -172,25 +104,5 @@
         $("#checkAll").click(function(){
             $('.users').not(this).prop('checked', this.checked);
         });
-        $("#checkAllDeliveies").click(function(){
-            $('.deliveries').not(this).prop('checked', this.checked);
-        });
-        $("#checkAllMarkets").click(function(){
-            $('.markets').not(this).prop('checked', this.checked);
-        });
-    </script>
-    <script>
-        $(document).on('change',"input[name='type']", function (e){
-            e.preventDefault()
-            if ( this.value ==='notification'){
-                $('#users_div').show();
-                $('#delivery_div').show();
-                $('#market_div').show();
-            }else {
-                $('#users_div').hide();
-                $('#market_div').hide();
-                $('#delivery_div').show();
-            }
-        })
     </script>
 @endpush

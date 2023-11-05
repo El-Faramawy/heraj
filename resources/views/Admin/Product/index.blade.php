@@ -1,26 +1,26 @@
 @extends('layouts.admin.app')
-@section('page_title') المنتجات @endsection
+@section('page_title') الاعلانات @endsection
 @section('content')
     <div class="row">
         <div class="col-md-12 col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title" >المنتجات</h3>
+                    <h3 class="card-title" >الاعلانات</h3>
                     <div class="mr-auto pageheader-btn">
-                        @if(in_array(26,admin()->user()->permission_ids))
-                            <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
-                                            <span>
-                                                <i class="fe fe-plus"></i>
-                                            </span> منتج جديد
-                            </a>
-                        @endif
-                        @if(in_array(25,admin()->user()->permission_ids))
+{{--                        @if(in_array(26,admin()->user()->permission_ids))--}}
+{{--                            <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">--}}
+{{--                                            <span>--}}
+{{--                                                <i class="fe fe-plus"></i>--}}
+{{--                                            </span> منتج جديد--}}
+{{--                            </a>--}}
+{{--                        @endif--}}
+{{--                        @if(in_array(25,admin()->user()->permission_ids))--}}
                             <a href="#"  id="multiDeleteBtn" class="btn btn-danger btn-icon text-white">
                                             <span>
                                                 <i class="fa fa-trash-o"></i>
                                             </span> حذف المحدد
                             </a>
-                        @endif
+{{--                        @endif--}}
                     </div>
                 </div>
                 <div class="card-body">
@@ -30,16 +30,20 @@
                             <tr>
                                 <th class="text-white"><input type="checkbox" id="master"></th>
                                 <th class="text-white">الصورة</th>
-                                <th class="text-white">المطعم</th>
-                                <th class="text-white">القسم الفرعى</th>
                                 <th class="text-white">الاسم</th>
-{{--                                <th class="text-white" >الوصف</th>--}}
-                                <th class="text-white">لديه عرض</th>
-                                <th class="text-white">نوع العرض</th>
-                                <th class="text-white">قيمة العرض</th>
-                                <th class="text-white">نسبة العرض</th>
-                                <th class="text-white">السعر القديم</th>
+                                <th class="text-white">المستخدم</th>
+                                <th class="text-white">القسم </th>
+                                <th class="text-white">القسم الفرعى</th>
+                                <th class="text-white">المدينة </th>
+                                <th class="text-white">المنطقة </th>
+                                <th class="text-white">النوع </th>
                                 <th class="text-white">السعر</th>
+                                <th class="text-white" >العنوان</th>
+                                <th class="text-white" >الوصف</th>
+                                <th class="text-white" >رقم الهاتف</th>
+                                <th class="text-white" >واتساب</th>
+                                <th class="text-white" >الكومنتات</th>
+                                <th class="text-white">التقييمات</th>
                                 <th class="text-white">تحكم</th>
                             </tr>
                             </thead>
@@ -63,7 +67,7 @@
                 <!--begin::Modal header-->
                 <div class="modal-header">
                     <!--begin::Modal title-->
-                    <h2>المنتجات</h2>
+                    <h2>الاعلانات</h2>
                     <!--end::Modal title-->
                     <!--begin::Close-->
                     <div class="btn btn-sm btn-icon btn-active-color-primary" style="cursor: pointer" data-dismiss="modal" aria-label="Close">
@@ -107,33 +111,36 @@
         var  columns =[
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
             {data: 'image', name: 'image'},
-            {data: 'market', name: 'market'},
+            {data: 'name', name: 'name'},
+            {data: 'user_id', name: 'user_id'},
+            {data: 'category', name: 'category'},
             {data: 'sub_category', name: 'sub_category'},
-            // {data: 'category', name: 'category'},
-            {data: 'name_ar', name: 'name_ar'},
-            // {data: 'description_ar', name: 'description_ar'},
-            {data: 'has_offer', name: 'has_offer'},
-            {data: 'offer_type', name: 'offer_type'},
-            {data: 'value', name: 'value'},
-            {data: 'percentage', name: 'percentage'},
-            {data: 'old_price', name: 'old_price'},
+            {data: 'city', name: 'city'},
+            {data: 'area', name: 'area'},
+            {data: 'type', name: 'type'},
             {data: 'price', name: 'price'},
+            {data: 'address', name: 'address'},
+            {data: 'description', name: 'description'},
+            {data: 'phone', name: 'phone'},
+            {data: 'whatsapp', name: 'whatsapp'},
+            {data: 'comment', name: 'comment'},
+            {data: 'product_rate', name: 'product_rate'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ];
         //======================== addBtn =============================
 
     </script>
     @include('layouts.admin.inc.ajax',['url'=>'products'])
-    <script>
+{{--    <script>--}}
 
-        $(document).on('click', '#addBtn', function (e) {
-            e.preventDefault();
-            $('#form-load').html(loader)
-            $('#Modal').modal('show')
-            var id = "{{$id}}" ;
-            setTimeout(function (){
-                $('#form-load').load("{{route("products.create")}}?id="+ id)
-            },100)
-        });
-    </script>
+{{--        $(document).on('click', '#addBtn', function (e) {--}}
+{{--            e.preventDefault();--}}
+{{--            $('#form-load').html(loader)--}}
+{{--            $('#Modal').modal('show')--}}
+{{--            var id = "{{$id}}" ;--}}
+{{--            setTimeout(function (){--}}
+{{--                $('#form-load').load("{{route("products.create")}}?id="+ id)--}}
+{{--            },100)--}}
+{{--        });--}}
+{{--    </script>--}}
 @endpush

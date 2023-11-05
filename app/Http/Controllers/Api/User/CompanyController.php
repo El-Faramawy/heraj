@@ -39,6 +39,11 @@ class CompanyController extends Controller
         $data = $request->all();
         $data['type'] = UserTypeEnum::USER;
         $user = user_api()->user();
+        if (isset($request->company_image))
+            $data['company_image'] = $this->saveImage($request->company_image, 'uploads/company', $user->getAttributes()['company_image']);
+        if (isset($request->company_panner))
+            $data['company_panner'] = $this->saveImage($request->company_panner, 'uploads/company', $user->getAttributes()['company_panner']);
+
         $user->update($data);
 
         return $this->apiResponse($user, '', 'simple');

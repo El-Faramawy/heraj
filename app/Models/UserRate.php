@@ -11,4 +11,7 @@ class UserRate extends Model
     protected $guarded = [];
     protected $table = 'user_rates';
 
+    public function user(){
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ProductTypeEnum;
+use App\Enums\UserTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\PhotoTrait;
 use App\Models\Category;
@@ -21,23 +23,22 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()){
-            $data =Product::where('sub_category_id',$request->sub_category_id)
-                ->with('category','sub_category','market')->latest()->get();
+            $data =Product::latest()->get();
             return Datatables::of($data)
                 ->addColumn('action', function ($product) {
                     $action = '';
-                    if (in_array(24, admin()->user()->permission_ids)) {
-                        $action .= '
-                        <button  id="editBtn" class="btn btn-default btn-primary btn-sm mb-2  mb-xl-0 "
-                             data-id="' . $product->id . '" ><i class="fa fa-edit text-white"></i>
-                        </button>';
-                    }
-                    if(in_array(25,admin()->user()->permission_ids)) {
+//                    if (in_array(24, admin()->user()->permission_ids)) {
+//                        $action .= '
+//                        <button  id="editBtn" class="btn btn-default btn-primary btn-sm mb-2  mb-xl-0 "
+//                             data-id="' . $product->id . '" ><i class="fa fa-edit text-white"></i>
+//                        </button>';
+//                    }
+//                    if(in_array(25,admin()->user()->permission_ids)) {
                         $action .=  '
                              <a class="btn btn-default btn-danger btn-sm mb-2 mb-xl-0 delete"
                              data-id="' . $product->id . '" ><i class="fa fa-trash-o text-white"></i></a>
                        ';
-                    }
+//                    }
                     return $action;
                 })
                 ->addColumn('checkbox' , function ($product){
@@ -46,34 +47,56 @@ class ProductController extends Controller
                 ->addColumn('category' , function ($product){
                     return $product->category?$product->category->name_ar:'';
                 })
+                ->addColumn('user' , function ($product){
+                    return $product->user?$product->user->name:'';
+                })
                 ->addColumn('sub_category' , function ($product){
                     return $product->sub_category?$product->sub_category->name_ar:'';
                 })
-                ->addColumn('market' , function ($product){
-                    return $product->market?$product->market->name_ar:'';
+                ->addColumn('city' , function ($product){
+                    return $product->city?$product->city->name_ar:'';
                 })
-                ->editColumn('has_offer',function ($item){
-                    $color = $item->has_offer == "yes" ? "success" :"danger";
-                    $text = $item->has_offer == "yes" ? "نعم" :"لا";
+                ->addColumn('area' , function ($product){
+                    return $product->area?$product->area->name_ar:'';
+                })
+                ->addColumn('comment', function ($item) {
+                    return '<a  class="btn btn-icon btn-bg-light btn-info btn-sm me-1 "
+                            href="'.route("comment.index","product_id=".$item->id).'" >
+                            <span class="svg-icon svg-icon-3" style="font-size:12px">
+                                <span class="svg-icon svg-icon-3">
+                                    <i class="fa fa-comments "></i>
+                                </span>
+                            </span>
+                            </button>';
+                })
+                ->addColumn('product_rate', function ($item) {
+                    return '<a  class="btn btn-icon btn-bg-warning btn-light btn-sm me-1 "
+                            href="'.route("product_rate.index","product_id=".$item->id).'" >
+                            <span class="svg-icon svg-icon-3" style="font-size:12px">
+                                <span class="svg-icon svg-icon-3">
+                                    <i class="fa fa-star text-warning "></i>
+                                </span>
+                            </span>
+                            </button>';
+                })
+                ->editColumn('type',function ($user){
+                    $color = $user->type == ProductTypeEnum::USER ? "light" :"primary";
+                    $text = $user->type == ProductTypeEnum::USER ? "فرد" :"شركة";
+                    return '<span class=" badge badge-sm badge-' . $color . '" >'.$text.'</span>';
+                })
+                ->editColumn('has_ad',function ($item){
+                    $color = $item->has_ad == 1 ? "success" :"danger";
+                    $text = $item->has_ad == 1 ? "نعم" :"لا";
                     return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
                 })
-                ->editColumn('offer_type',function ($item){
-                    if ( $item->has_offer == "no") return '';
-                    $color = $item->offer_type == "value" ? "primary" :"info";
-                    $text = $item->offer_type == "value" ? "قيمة" :"نسبة";
+                ->editColumn('is_chat',function ($item){
+                    $color = $item->is_chat == 1 ? "success" :"danger";
+                    $text = $item->is_chat == 1 ? "نعم" :"لا";
                     return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
                 })
-                ->editColumn('value',function ($item){
-                    if ( $item->has_offer == "no") return '';
-                    return $item->offer_type == "value"?$item->value:'';
-                })
-                ->editColumn('percentage',function ($item){
-                    if ( $item->has_offer == "no") return '';
-                    return $item->offer_type == "percentage"?$item->percentage:'';
-                })
-                ->editColumn('old_price',function ($item){
-                    if ( $item->has_offer == "no") return '';
-                    return $item->old_price;
+                ->addColumn('address', function ($item) {
+                    $text = "الذهاب للعنوان";
+                    return '<a href= "https://maps.google.com/?q='.$item->latitude.','.$item->longitude.'" target="_blank">'.$text.'</a>' ;
                 })
                 ->editColumn('image',function ($product){
                     return '<img alt="image" class="img list-thumbnail border-0" style="width:100px;border-radius:10px" onclick="window.open(this.src)" src="'.$product->image.'">';
@@ -81,82 +104,9 @@ class ProductController extends Controller
                 ->escapeColumns([])
                 ->make(true);
         }
-        return view('Admin.Product.index',['id'=>$request->sub_category_id]);
-    }
-    ################ Add Object #################
-    public function create(Request $request)
-    {
-        $sub_category = SubCategory::where('id',$request->id)->first();
-        $sub_categories = SubCategory::all();
-        $markets = Market::all();
-        return view('Admin.Product.parts.create',compact('markets','sub_category','sub_categories'))->render();
+        return view('Admin.Product.index');
     }
 
-    public function store(Request $request)
-    {
-        $valedator = Validator::make($request->all(), [
-//            'category_id'=>'required',
-//            'market_id'=>'required',
-            'name_ar'=>'required',
-            'name_en'=>'required',
-            'description_ar'=>'required',
-            'description_en'=>'required',
-            'price'=>'required',
-            'image'=>'required',
-        ]);
-        if ($valedator->fails())
-            return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
-
-        $data = $request->all();
-        if (isset($request->image))
-            $data['image']    = $this->saveImage($request->image,'uploads/product');
-
-        Product::create($data);
-
-        return response()->json(
-            [
-                'success' => 'true',
-                'message' => 'تم الاضافة بنجاح'
-            ]);
-    }
-    ################ Edit Product #################
-    public function edit(Product $product)
-    {
-        $markets = Market::all();
-        $market_categories = MarketCategory::with('category')->where('market_id', $product->market_id)->get();
-        $market_sub_categories = MarketSubCategory::where('market_id', $product->market_id)
-            ->pluck('sub_category_id')->toArray();
-        $market_sub_categories = SubCategory::where('category_id', $product->category_id)->whereIn('id', $market_sub_categories)->get();
-        $sub_categories = SubCategory::all();
-        return view('Admin.Product.parts.edit', compact('product','markets','market_categories','market_sub_categories','sub_categories'));
-    }
-    ################ update Product #################
-    public function update(Request $request, Product $product)
-    {
-        $valedator = Validator::make($request->all(), [
-//            'category_id'=>'required',
-//            'market_id'=>'required',
-            'name_ar'=>'required',
-            'name_en'=>'required',
-            'description_ar'=>'required',
-            'description_en'=>'required',
-            'price'=>'required',
-//            'image'=>'required',
-        ]);
-        if ($valedator->fails())
-            return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
-
-        $data = $request->all();
-        if ($request->image && $request->image != null)
-            $data['image']    = $this->saveImage($request->image,'uploads/product',$product->image);
-        $product->update($data);
-
-        return response()->json(
-            [
-                'success' => 'true',
-                'message' => 'تم التعديل بنجاح '
-            ]);
-    }
     ################ multiple Delete  #################
     public function multiDelete(Request $request)
     {
@@ -179,30 +129,6 @@ class ProductController extends Controller
                 'message' => 'تم الحذف بنجاح'
             ]);
     }
-    ################ get_market_categories #################
-    public function get_market_categories(Request $request)
-    {
-        $market_categories = MarketCategory::with('category')->where('market_id', $request->market_id)->get();
-        $data = '<option value="" selected disabled>القسم</option>';
-        if ($market_categories){
-            foreach($market_categories as $category){
-                $data .=' <option value="'.$category->category->id.'">'.$category->category->name_ar.'</option>';
-            }
-        }
-        return response()->json($data);
-    }   ################ get_market_sub_categories #################
-    public function get_market_sub_categories(Request $request)
-    {
-        $market_sub_categories = MarketSubCategory::where('market_id', $request->market_id)
-            ->pluck('sub_category_id')->toArray();
-        $sub_categories = SubCategory::where('category_id', $request->category_id)->whereIn('id', $market_sub_categories)->get();
-        $data = '<option value="" selected disabled> القسم الفرعى</option>';
-        if ($sub_categories){
-            foreach($sub_categories as $category){
-                $data .=' <option value="'.$category->id.'">'.$category->name_ar.'</option>';
-            }
-        }
-        return response()->json($data);
-    }
+
 
 }

@@ -7,20 +7,20 @@
                 <div class="card-header">
                     <h3 class="card-title">الاقسام الفرعية</h3>
                     <div class="mr-auto pageheader-btn">
-                        @if(in_array(63,admin()->user()->permission_ids))
+{{--                        @if(in_array(63,admin()->user()->permission_ids))--}}
                             <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
                                             <span>
                                                 <i class="fe fe-plus"></i>
                                             </span> اضافة جديد
                             </a>
-                        @endif
-                        @if(in_array(62,admin()->user()->permission_ids))
+{{--                        @endif--}}
+{{--                        @if(in_array(62,admin()->user()->permission_ids))--}}
                             <a href="#"  id="multiDeleteBtn" class="btn btn-danger btn-icon text-white">
                                             <span>
                                                 <i class="fa fa-trash-o"></i>
                                             </span> حذف المحدد
                             </a>
-                        @endif
+{{--                        @endif--}}
                     </div>
                 </div>
                 <div class="card-body">
@@ -30,10 +30,9 @@
                             <tr>
                                 <th class="text-white"><input type="checkbox" id="master"></th>
                                 <th class="text-white">#</th>
+                                <th class="text-white">الصورة</th>
                                 <th class="text-white">الاسم</th>
-                                <th class="text-white">المطعم</th>
-                                <th class="text-white">المنتجات</th>
-{{--                                <th class="text-white">القسم</th>--}}
+                                <th class="text-white">القسم</th>
                                 <th class="text-white">تحكم</th>
                             </tr>
                             </thead>
@@ -102,10 +101,9 @@
         var  columns =[
             {data: 'checkbox', name: 'checkbox', orderable: false, searchable: false},
             {data: 'id', name: 'id'},
+            {data: 'image', name: 'image'},
             {data: 'name', name: 'name'},
-            {data: 'market', name: 'market'},
-            {data: 'products', name: 'products'},
-            // {data: 'category', name: 'category'},
+            {data: 'category', name: 'category'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ];
         //======================== addBtn =============================

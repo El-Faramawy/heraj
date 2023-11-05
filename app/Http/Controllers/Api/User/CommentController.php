@@ -24,9 +24,10 @@ class CommentController extends Controller
             return $this->apiResponse(null, $validator->errors(), 'simple', '422');
         }
         $data = $request->only('comment', 'product_id');
-
+        $data['user_id'] = user_api()->id();
         $comment = ProductComment::create($data);
 
+        $comment = ProductComment::where('id',$comment->id)->with('user')->first();
         return $this->apiResponse($comment, 'done', 'simple');
     }
 
@@ -41,8 +42,10 @@ class CommentController extends Controller
             return $this->apiResponse(null, $validator->errors(), 'simple', '422');
         }
         $data = $request->only('comment_id', 'reply');
-
+        $data['user_id'] = user_api()->id();
         $comment = ProductReply::create($data);
+
+        $comment = ProductReply::where('id',$comment->id)->with('user')->first();
 
         return $this->apiResponse($comment, 'done', 'simple');
     }

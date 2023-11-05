@@ -9,6 +9,7 @@ class City extends Model
 {
     use HasFactory;
     protected $appends =['name'];
+    protected $guarded = [];
 
     //===================  name ===========================
     public function getNameAttribute(){

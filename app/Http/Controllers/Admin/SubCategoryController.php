@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\PhotoTrait;
 use App\Models\Category;
 use App\Models\Market;
 use App\Models\SubCategory;
@@ -12,68 +13,55 @@ use Yajra\DataTables\DataTables;
 
 class SubCategoryController extends Controller
 {
+    use PhotoTrait;
     public function index(Request $request)
     {
         if ($request->ajax()){
-//            $categories =SubCategory::with('category')->latest()->get();
             $categories =SubCategory::with('category')
-                ->where('market_id',$request->market_id)->latest()->get();
+                ->where('category_id',$request->category_id)->latest()->get();
             return Datatables::of($categories)
                 ->addColumn('action', function ($category) {
                     $action = '';
-                    if (in_array(61, admin()->user()->permission_ids)) {
+//                    if (in_array(61, admin()->user()->permission_ids)) {
                         $action .= '
                         <button  id="editBtn" class="btn btn-default btn-primary btn-sm mb-2  mb-xl-0 "
                              data-id="' . $category->id . '" ><i class="fa fa-edit text-white"></i>
                         </button>';
-                    }
-                    if(in_array(62,admin()->user()->permission_ids)) {
+//                    }
+//                    if(in_array(62,admin()->user()->permission_ids)) {
                         $action .=  '
                              <a class="btn btn-default btn-danger btn-sm mb-2 mb-xl-0 delete"
                              data-id="' . $category->id . '" ><i class="fa fa-trash-o text-white"></i></a>
                        ';
-                    }
+//                    }
                     return $action;
                 })
-//                ->editColumn('category',function ($item){
-//                    return $item->category ? $item->category->name_ar : '';
-//                })
-                ->editColumn('market',function ($item){
-                    return $item->market ? $item->market->name_ar : '';
+                ->editColumn('image',function ($item){
+                    return '<img alt="image" class="img list-thumbnail border-0" style="width:100px;border-radius:10px" onclick="window.open(this.src)" src="'.$item->image.'">';
                 })
-                ->addColumn('products', function ($item) {
-                    $order_data = '<a  class="btn btn-icon btn-bg-light btn-info btn-sm me-1 "
-                            href="'.route("products.index","sub_category_id=".$item->id).'" >
-                            <span class="svg-icon svg-icon-3">
-                                <span class="svg-icon svg-icon-3">
-                                    <i class="fa fa-database "></i>
-                                </span>
-                            </span>
-                            </button>';
-                    return in_array(23,admin()->user()->permission_ids) ?$order_data :'';
+                ->editColumn('category',function ($item){
+                    return $item->category ? $item->category->name_ar : '';
                 })
-                ->addColumn('checkbox' , function ($category){
-                    return '<input type="checkbox" class="sub_chk" data-id="'.$category->id.'">';
+                ->addColumn('checkbox' , function ($item){
+                    return '<input type="checkbox" class="sub_chk" data-id="'.$item->id.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);
         }
-        return view('Admin.SubCategory.index',['id'=>$request->market_id?:'']);
+        return view('Admin.SubCategory.index',['id'=>$request->category_id?:'']);
     }
     ################ Add Object #################
     public function create(Request $request)
     {
-        $market_id = $request->id;
-//        $categories = Category::all();
-        $markets = Market::all();
-        return view('Admin.SubCategory.parts.create',compact('markets','market_id'))->render();
+        $category_id = $request->id;
+        $categories = Category::all();
+        return view('Admin.SubCategory.parts.create',compact('categories','category_id'))->render();
     }
 
     public function store(Request $request)
     {
         $valedator = Validator::make($request->all(), [
-//                'category_id'=>'required',
-                'market_id'=>'required',
+                'category_id'=>'required',
                 'name_ar'=>'required',
                 'name_en'=>'required',
             ]
@@ -82,6 +70,8 @@ class SubCategoryController extends Controller
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
         $data = $request->all();
+        if (isset($request->image))
+            $data['image']    = $this->saveImage($request->image,'uploads/SubCategory');
         SubCategory::create($data);
 
         return response()->json(
@@ -93,17 +83,15 @@ class SubCategoryController extends Controller
     ################ Edit Object #################
     public function edit(SubCategory $sub_category)
     {
-//        $categories = Category::all();
-        $markets = Market::all();
-        return view('Admin.SubCategory.parts.edit', compact('markets','sub_category'));
+        $categories = Category::all();
+        return view('Admin.SubCategory.parts.edit', compact('categories','sub_category'));
     }
     ###############################################
     ################ update offer #################
     public function update(Request $request, SubCategory $sub_category)
     {
         $valedator = Validator::make($request->all(), [
-//                'category_id'=>'required',
-                'market_id'=>'required',
+                'category_id'=>'required',
                 'name_ar'=>'required',
                 'name_en'=>'required',
             ]
@@ -112,6 +100,8 @@ class SubCategoryController extends Controller
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
         $data = $request->all();
+        if (isset($request->image))
+            $data['image']    = $this->saveImage($request->image,'uploads/SubCategory',$sub_category->image);
         $sub_category->update($data);
 
         return response()->json(

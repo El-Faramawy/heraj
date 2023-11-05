@@ -2,6 +2,7 @@
 
 
 namespace App\Http\Traits;
+
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\PhoneToken;
@@ -24,36 +25,20 @@ trait NotificationTrait
        |
        */
 
-    public function sendAllNotifications($array_to, $title, $message, $type = null,$order=null,$message_type = null){
+    public function sendAllNotifications($array_to, $title, $message)
+    {
 
-        $this->sendNotification($array_to, $title, $message, $type);
-        $this->sendFCMNotification($array_to, $title, $message, $type,$order,$message_type);
+        $this->sendNotification($array_to, $title, $message);
+        $this->sendFCMNotification($array_to, $title, $message);
     }
 
     //****************************************************************************************
-    public function sendFCMNotification($array_to, $title, $message, $type = null ,$order = null,$message_type = null)
+    public function sendFCMNotification($array_to, $title, $message , $data = null,$message_type = null)
     {
         $data = [];
-        if ($order!=null){
-            $data['order_id'] = $order['id'];
-            $data['status'] = $order['status'];
-            $data['order'] = Order::where('id', $order['id'])->first();
-            $data['message_type'] = 'order';
-            $data = json_encode($data);
-        }else{
-            $data['message_type'] = $message_type;
-//            $data = null;
-        }
-
-        if ($type == 'delivery') {
-            $tokens = PhoneToken::whereIn("delivery_id", $array_to)->pluck('phone_token')->toArray();
-        }
-        elseif ($type == 'market') {
-            $tokens = PhoneToken::where("market_id",$array_to )->pluck('phone_token')->toArray();
-        }else{
-            $tokens = PhoneToken::whereIn("user_id", $array_to)->pluck('phone_token')->toArray();
-        }
-
+        $data['message_type'] = $message_type;
+        $data = json_encode($data);
+        $tokens = PhoneToken::whereIn("user_id", $array_to)->pluck('phone_token')->toArray();
         $SERVER_API_KEY = env('FIREBASE_KEY');
         $data = [
             "registration_ids" => $tokens,
@@ -89,32 +74,17 @@ trait NotificationTrait
 
     //****************************************************************************************
 
-    public function sendNotification($array_to, $title, $message, $type = null)
+    public function sendNotification($array_to, $title, $message)
     {
         $data = [];
         $data['title'] = $title;
         $data['message'] = $message;
 
-        if ($type == 'delivery') {
-            foreach ($array_to as $delivery){
-                $data['delivery_id'] = $delivery;
-                Notification::create($data);
-                $data['delivery_id'] = null;
-            }
-        } elseif ($type == 'market') {
-            foreach ($array_to as $market){
-                $data['market_id'] = $market;
-                Notification::create($data);
-                $data['market_id'] = null;
-            }
-        }else {
-            foreach ($array_to as $user){
-                $data['user_id'] = $user;
-                Notification::create($data);
-                $data['user_id'] = null;
-            }
+        foreach ($array_to as $user) {
+            $data['user_id'] = $user;
+            Notification::create($data);
+            $data['user_id'] = null;
         }
-
 
     }
 

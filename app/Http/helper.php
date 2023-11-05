@@ -64,6 +64,19 @@ if (!function_exists('my_toaster')) {
         session()->flash('type', $alert_type);
     }
 }
+//===================  package ===========================
+if (!function_exists('package_type')) {
+    function package_type($id)
+    {
+        if (in_array($id, [4, 5, 6])) {
+            return 'ذهبى';
+        }
+        if (in_array($id, [7, 8, 9])) {
+            return 'ماسى';
+        }
+        return 'فضى';
+    }
+}
 
 
 //===================  getToken ===========================

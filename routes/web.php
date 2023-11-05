@@ -17,7 +17,9 @@ Route::get('/', function (){
 })->name('welcome');
 
 // ****************** web view *****************************
-Route::get('terms', 'WebView\TermsController@terms')->name('terms');
-Route::get('privacy', 'WebView\TermsController@privacy')->name('privacy');
-Route::get('about', 'WebView\TermsController@about')->name('about');
+
+Route::get('privacy','TermsController@privacy')->name('privacy');
+Route::get('about','TermsController@about')->name('about');
+Route::get('terms','TermsController@terms')->name('terms');
+
 

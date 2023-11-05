@@ -73,6 +73,7 @@ class AuthController extends Controller
             }
             $data = $request->except('fcm_token');
             $data['password'] = Hash::make($request->password);
+            $data['type'] = UserTypeEnum::USER;
             if ($request->image && $request->image != null)
                 $data['image'] = $this->saveImage($request->image, 'uploads/user');
             $user = User::create($data);
@@ -128,18 +129,6 @@ class AuthController extends Controller
 
         return $this->apiResponse($user, '', 'simple');
 
-    }
-    //===========================================
-    public function checkPhone(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'phone' => 'required|exists:users,phone',
-        ]);
-        if ($validator->fails()) {
-            return $this->apiResponse(null, $validator->errors(), 'simple', '422');
-        }
-        $user = User::where('phone', $request->phone)->first();
-        return $this->apiResponse($user, '', 'simple');
     }
 
     //=======================================================================================================
@@ -219,7 +208,7 @@ class AuthController extends Controller
         return $this->apiResponse($verify_account, 'done', 'simple');
 
     }
-    //=======================================================================================================
+
 
 
 }

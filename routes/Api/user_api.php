@@ -2,16 +2,20 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
 
     /* ---------------------- Authentication -------------------*/
     Route::post('login','AuthController@login');
     Route::post('register', 'AuthController@register');
-    Route::get('checkPhone', 'AuthController@checkPhone');
+
+    Route::get('checkPhone', 'ForgetPasswordController@checkPhone');
+    Route::post('update_password', 'ForgetPasswordController@update_password');
 
     /* ---------------------- home -------------------*/
     Route::get('home','HomeController@index');
     Route::get('product_search','HomeController@product_search');
+
 
     /* ---------------------- Category -------------------*/
     Route::get('category','CategoryController@index');
@@ -27,6 +31,10 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
         Route::post('logout', 'AuthController@logout');
         Route::post('deleteAccount', 'AuthController@deleteAccount');
 
+        /* ---------------------- home -------------------*/
+        Route::get('home','HomeController@index');
+        Route::get('product_search','HomeController@product_search');
+
         /* ---------------------- notifications -------------------*/
         Route::get('notifications', 'NotificationController@notifications');
         Route::get('getNotificationsCount', 'NotificationController@getNotificationsCount');
@@ -36,7 +44,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
             Route::get('one_product', 'ProductController@one_product');
             Route::get('user_products', 'ProductController@user_products');
             Route::post('store', 'ProductController@store');
-            Route::post('update', 'ProductController@update');
+            Route::post('update/{id}', 'ProductController@update');
             Route::post('delete', 'ProductController@delete');
         });
         /* ---------------------- company -------------------*/
@@ -46,6 +54,13 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
             Route::get('product_search', 'CompanyController@product_search');
             Route::post('add_rate','CompanyController@add_rate');
             Route::get('followers', 'CompanyController@followers');
+        });
+        /* ---------------------- packages -------------------*/
+        Route::group(['prefix' => 'packages'], function () {
+            Route::get('/', 'PackageController@packages');
+            Route::post('store', 'PackageController@store');
+            Route::post('addPannerAd', 'PackageController@addPannerAd');
+            Route::post('deletePannerAd', 'PackageController@deletePannerAd');
         });
 
         /* ---------------------- follow -------------------*/

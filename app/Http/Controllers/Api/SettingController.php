@@ -12,8 +12,8 @@ class SettingController extends Controller
     public function setting(){
         $setting = Setting::first();
         $setting->terms_link = url('terms');
-        $setting->privacy = url('privacy');
-        $setting->about = url('about');
+        $setting->privacy_link = url('privacy');
+        $setting->about_link = url('about');
         return $this->apiResponse($setting,'','simple');
     }
 

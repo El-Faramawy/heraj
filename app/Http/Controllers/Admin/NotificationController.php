@@ -18,10 +18,8 @@ class NotificationController extends Controller
     use NotificationTrait;
     public function index(Request $request)
     {
-        $deliveries = Delivery::where(['block'=> 'no','is_available'=>'yes'])->get();
-        $markets = Market::where(['block'=> 'no','is_available'=>'yes'])->get();
-        $users = User::where(['block'=> 'no'/*,'is_active'=>'yes'*/])->get();
-        return view('Admin.Notification.index',compact('users','deliveries','markets'));
+        $users = User::all();
+        return view('Admin.Notification.index',compact('users'));
     }
 
     public function store(Request $request)
@@ -41,21 +39,6 @@ class NotificationController extends Controller
         if ($request->users){
             $this->sendAllNotifications($request->users, $request->title,$request->message);
         }
-
-        $data = $request->except('users','deliveries','markets');
-        if ($request->deliveries){
-            foreach ($request->deliveries as $delivery){
-                $data['delivery_id'] = $delivery;
-                Notification::create($data);
-                $data['delivery_id'] = null;
-            }
-            $this->sendFCMNotification($request->deliveries, $request->title,$request->message,'delivery');
-
-        }
-        if ($request->markets){
-            $this->sendAllNotifications($request->markets, $request->title,$request->message,'market');
-        }
-
 
         return response()->json(
             [

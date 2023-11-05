@@ -19,27 +19,32 @@ class CategoryController extends Controller
             return Datatables::of($categories)
                 ->addColumn('action', function ($category) {
                     $action = '';
-                    if (in_array(61, admin()->user()->permission_ids)) {
+//                    if (in_array(61, admin()->user()->permission_ids)) {
                         $action .= '
                         <button  id="editBtn" class="btn btn-default btn-primary btn-sm mb-2  mb-xl-0 "
                              data-id="' . $category->id . '" ><i class="fa fa-edit text-white"></i>
                         </button>';
-                    }
-                    if(in_array(62,admin()->user()->permission_ids)) {
+//                    }
+//                    if(in_array(62,admin()->user()->permission_ids)) {
                         $action .=  '
                              <a class="btn btn-default btn-danger btn-sm mb-2 mb-xl-0 delete"
                              data-id="' . $category->id . '" ><i class="fa fa-trash-o text-white"></i></a>
                        ';
-                    }
+//                    }
                     return $action;
                 })
                 ->editColumn('image',function ($category){
                     return '<img alt="image" class="img list-thumbnail border-0" style="width:100px;border-radius:10px" onclick="window.open(this.src)" src="'.$category->image.'">';
                 })
-                ->editColumn('featured',function ($item){
-                    $color = $item->featured == "yes" ? "success" :"danger";
-                    $text = $item->featured == "yes" ? "نعم" :"لا";
-                    return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
+                ->addColumn('sub_categories', function ($item) {
+                    return '<a  class="btn btn-icon btn-bg-light btn-info btn-sm me-1 "
+                            href="'.route("sub_categories.index","category_id=".$item->id).'" >
+                            <span class="svg-icon svg-icon-3" style="font-size:12px">
+                                <span class="svg-icon svg-icon-3">
+                                    <i class="fa fa-bars "></i>
+                                </span>
+                            </span>
+                            </button>';
                 })
                 ->addColumn('checkbox' , function ($category){
                     return '<input type="checkbox" class="sub_chk" data-id="'.$category->id.'">';

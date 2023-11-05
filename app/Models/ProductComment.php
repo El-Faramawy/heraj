@@ -14,4 +14,9 @@ class ProductComment extends Model
     {
         return $this->hasMany(ProductReply::class,'comment_id');
     }
+    //===================  user ===========================
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

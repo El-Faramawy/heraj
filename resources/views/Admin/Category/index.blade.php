@@ -7,20 +7,20 @@
                 <div class="card-header">
                     <h3 class="card-title">الأقسام</h3>
                     <div class="mr-auto pageheader-btn">
-                        @if(in_array(63,admin()->user()->permission_ids))
+{{--                        @if(in_array(63,admin()->user()->permission_ids))--}}
                             <a href="#"  id="addBtn" class="btn btn-primary btn-icon text-white">
                                             <span>
                                                 <i class="fe fe-plus"></i>
                                             </span> اضافة جديد
                             </a>
-                        @endif
-                        @if(in_array(62,admin()->user()->permission_ids))
+{{--                        @endif--}}
+{{--                        @if(in_array(62,admin()->user()->permission_ids))--}}
                             <a href="#"  id="multiDeleteBtn" class="btn btn-danger btn-icon text-white">
                                             <span>
                                                 <i class="fa fa-trash-o"></i>
                                             </span> حذف المحدد
                             </a>
-                        @endif
+{{--                        @endif--}}
                     </div>
                 </div>
                 <div class="card-body">
@@ -32,7 +32,7 @@
                                 <th class="text-white">#</th>
                                 <th class="text-white">الصورة</th>
                                 <th class="text-white">الاسم</th>
-                                <th class="text-white">قسم مميز</th>
+                                <th class="text-white">الاقسام الفرعية</th>
                                 <th class="text-white">تحكم</th>
                             </tr>
                             </thead>
@@ -103,7 +103,7 @@
             {data: 'id', name: 'id'},
             {data: 'image', name: 'image'},
             {data: 'name', name: 'name'},
-            {data: 'featured', name: 'featured'},
+            {data: 'sub_categories', name: 'sub_categories'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ];
         //======================== addBtn =============================

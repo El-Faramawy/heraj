@@ -9,6 +9,7 @@ class Area extends Model
 {
     use HasFactory;
     protected $appends =['name'];
+    protected $guarded = [];
 
     //===================  name ===========================
     public function getNameAttribute(){
@@ -20,5 +21,9 @@ class Area extends Model
         elseif(request()->lang && request()->lang != null)
             $name = $this->attributes['name_'.request()->lang];
         return $name;
+    }
+    //==============================================
+    public function city(){
+        return $this->belongsTo(City::class);
     }
 }

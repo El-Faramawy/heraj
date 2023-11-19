@@ -42,6 +42,7 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
+            'max_file_size' => 20480, // Set your desired max file size in kilobytes
         ],
 
         's3' => [

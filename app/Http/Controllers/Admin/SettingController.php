@@ -21,16 +21,10 @@ class SettingController extends Controller
 //        return $request->all();
         $data = $request->all();
         if ( $request->logo && $request->logo != null ){
-//            if (file_exists($setting->getAttributes()['logo'])) {
-//                unlink($setting->getAttributes()['logo']);
-//            }
             $data['logo']    = $this->saveImage($request->logo,'uploads/setting',$setting->logo);
         }
 
         if ( $request->fav_icon && $request->fav_icon != null ){
-//            if (file_exists($setting->getAttributes()['fav_icon'])) {
-//                unlink($setting->getAttributes()['fav_icon']);
-//            }
             $data['fav_icon']    = $this->saveImage($request->fav_icon,'uploads/setting',$setting->fav_icon);
         }
 

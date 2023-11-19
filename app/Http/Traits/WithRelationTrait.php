@@ -64,7 +64,7 @@ trait WithRelationTrait
     /* favouriteRelations */
     private function favouriteRelations()
     {
-        return ['product'];
+        return ['product.user', 'product.category', 'product.sub_category', 'product.city'];
     }
     /* ========================= favouriteRelations ============================*/
     /* favouriteRelations */

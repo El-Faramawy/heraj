@@ -38,6 +38,8 @@ class FavouriteController extends Controller
     //================================================================
     public function favourite_products(Request $request)
     {
+//        Product::where('type',ProductTypeEnum::COMPANY)->inRandomOrder()->limit(20)/*->select('id','image','name','created_at','price')*/
+//        ->with('user', 'category', 'sub_category', 'city');
         $favourite = Favourate::with($this->favouriteRelations())
             ->whereHas('product')
             ->where('user_id', user_api()->user()->id);

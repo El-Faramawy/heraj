@@ -12,9 +12,9 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
     Route::get('checkPhone', 'ForgetPasswordController@checkPhone');
     Route::post('update_password', 'ForgetPasswordController@update_password');
 
-    /* ---------------------- home -------------------*/
-    Route::get('home','HomeController@index');
-    Route::get('product_search','HomeController@product_search');
+//    /* ---------------------- home -------------------*/
+//    Route::get('home','HomeController@index');
+//    Route::get('product_search','HomeController@product_search');
 
 
     /* ---------------------- Category -------------------*/
@@ -46,6 +46,7 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
             Route::post('store', 'ProductController@store');
             Route::post('update/{id}', 'ProductController@update');
             Route::post('delete', 'ProductController@delete');
+            Route::get('rates', 'ProductController@rates');
         });
         /* ---------------------- company -------------------*/
         Route::group(['prefix' => 'company'], function () {
@@ -54,6 +55,8 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
             Route::get('product_search', 'CompanyController@product_search');
             Route::post('add_rate','CompanyController@add_rate');
             Route::get('followers', 'CompanyController@followers');
+            Route::get('users_i_follow', 'CompanyController@users_i_follow');
+            Route::get('rates', 'CompanyController@rates');
         });
         /* ---------------------- packages -------------------*/
         Route::group(['prefix' => 'packages'], function () {

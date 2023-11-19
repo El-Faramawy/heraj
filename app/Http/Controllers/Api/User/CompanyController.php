@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Enums\ProductTypeEnum;
 use App\Enums\UserTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\PaginateTrait;
@@ -45,6 +46,8 @@ class CompanyController extends Controller
             $data['company_panner'] = $this->saveImage($request->company_panner, 'uploads/company', $user->getAttributes()['company_panner']);
 
         $user->update($data);
+
+        Product::where('user_id',$user->id)->update(['type'=>ProductTypeEnum::COMPANY]);
 
         return $this->apiResponse($user, '', 'simple');
     }
@@ -115,7 +118,28 @@ class CompanyController extends Controller
     //================================================================
     public function followers(Request $request)
     {
-        $follows = Following::where('following_user_id', user_api()->id())->with('following_user');
+        $follows = Following::where([['following_user_id', user_api()->id()], ['follower_user_id', '!=', null]])->with('follower_user');
         return $this->apiResponse($follows);
     }
+
+    //================================================================
+    public function users_i_follow(Request $request)
+    {
+        $follows = Following::where([['follower_user_id', user_api()->id()], ['following_user_id', '!=', null]])->with('following_user');
+        return $this->apiResponse($follows);
+    }
+
+    //===================================================
+    public function rates(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:users,id',
+        ]);
+        if ($validator->fails()) {
+            return $this->apiResponse(null, $validator->errors(), 'simple', '422');
+        }
+        $rate = UserRate::where('rated_user_id', $request->id)->with('user');
+        return $this->apiResponse($rate);
+    }
+
 }

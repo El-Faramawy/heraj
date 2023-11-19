@@ -23,7 +23,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $data = [];
-        $slider = Product::where('has_ad', 1)->select('id', 'image');
+        $slider = Product::where('has_ad', 1)->select('id', 'image','name');
         $data['sliders'] = $this->apiResponse($slider);
         $products = Product::where('type',ProductTypeEnum::USER)->inRandomOrder()->limit(20)/*->select('id','image','name','created_at','price')*/
         ->with('user', 'category', 'sub_category', 'city');

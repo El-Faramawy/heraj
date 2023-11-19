@@ -48,7 +48,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     protected $guarded = [];
-    protected $appends = ['package'];
+    protected $appends = ['package','is_follow'];
 
     public function getImageAttribute(){
         return  get_file($this->attributes['image']);
@@ -66,11 +66,15 @@ class User extends Authenticatable implements JWTSubject
     public function getPackageAttribute(){
         $userPackage = UserPackage::where('user_id',$this->attributes['id'])
             ->where(function ($q){
-                $q->where('start_date','<=',date('Y-m-d'))
+                $q/*->where('start_date','<=',date('Y-m-d'))*/
                 ->where('end_date','>=',date('Y-m-d'));
             })
             ->with('package')->first();
-        return  $userPackage?$userPackage->package:null;
+        if ($userPackage){
+            $userPackage->package->end_date = $userPackage->end_date;
+            return $userPackage->package;
+        }
+        return null;
     }
 
     public function user_products(){
@@ -89,6 +93,17 @@ class User extends Authenticatable implements JWTSubject
     public function verify_images(){
         return $this->hasOne(VerifyAccountImage::class);
     }
-
+    //===================  is_follow ===========================
+    public function getIsFollowAttribute(){
+        if (user_api()->check()){
+            $following = Following::where(['follower_user_id' => user_api()->user()->id , 'following_user_id' => $this->attributes['id'] ] )->count();
+            if ($following > 0)
+                return 'yes';
+            else
+                return 'no';
+        }else{
+            return 'no';
+        }
+    }
 
 }

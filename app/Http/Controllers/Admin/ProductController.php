@@ -3,17 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\ProductTypeEnum;
-use App\Enums\UserTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\PhotoTrait;
-use App\Models\Category;
-use App\Models\Market;
-use App\Models\MarketCategory;
-use App\Models\MarketSubCategory;
 use App\Models\Product;
-use App\Models\SubCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
 class ProductController extends Controller
@@ -94,12 +87,57 @@ class ProductController extends Controller
                     $text = $item->is_chat == 1 ? "نعم" :"لا";
                     return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
                 })
+                ->editColumn('is_95',function ($item){
+                    $color = $item->is_95 == 1 ? "success" :"danger";
+                    $text = $item->is_95 == 1 ? "نعم" :"لا";
+                    return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
+                })
+                ->editColumn('is_diesel',function ($item){
+                    $color = $item->is_diesel == 1 ? "success" :"danger";
+                    $text = $item->is_diesel == 1 ? "نعم" :"لا";
+                    return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
+                })
+                ->editColumn('civil_defense_license',function ($item){
+                    $color = $item->civil_defense_license == 1 ? "success" :"danger";
+                    $text = $item->civil_defense_license == 1 ? "نعم" :"لا";
+                    return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
+                })
+                ->editColumn('municipal_license',function ($item){
+                    $color = $item->municipal_license == 1 ? "success" :"danger";
+                    $text = $item->municipal_license == 1 ? "نعم" :"لا";
+                    return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
+                })
+                ->editColumn('for_rent',function ($item){
+                    $color = $item->for_rent == 1 ? "success" :"danger";
+                    $text = $item->for_rent == 1 ? "نعم" :"لا";
+                    return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
+                })
+                ->editColumn('developed',function ($item){
+                    $color = $item->developed == 1 ? "success" :"danger";
+                    $text = $item->developed == 1 ? "نعم" :"لا";
+                    return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
+                })
+                ->editColumn('show_price',function ($item){
+                    $color = $item->show_price == 1 ? "success" :"danger";
+                    $text = $item->show_price == 1 ? "نعم" :"لا";
+                    return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
+                })
                 ->addColumn('address', function ($item) {
                     $text = "الذهاب للعنوان";
                     return '<a href= "https://maps.google.com/?q='.$item->latitude.','.$item->longitude.'" target="_blank">'.$text.'</a>' ;
                 })
                 ->editColumn('image',function ($product){
                     return '<img alt="image" class="img list-thumbnail border-0" style="width:100px;border-radius:10px" onclick="window.open(this.src)" src="'.$product->image.'">';
+                })
+//                ->editColumn('civil_defense_license',function ($product){
+//                    return '<img alt="image" class="img list-thumbnail border-0" style="width:100px;border-radius:10px" onclick="window.open(this.src)" src="'.$product->civil_defense_license.'">';
+//                })
+//                ->editColumn('municipal_license',function ($product){
+//                    return '<img alt="image" class="img list-thumbnail border-0" style="width:100px;border-radius:10px" onclick="window.open(this.src)" src="'.$product->municipal_license.'">';
+//                })
+                ->editColumn('video',function ($product){
+                    $video = "'".$product->video."'";
+                    return '<img alt="image" class="img list-thumbnail border-0" style="width:100px;border-radius:10px" onclick="window.open('.$video.')" src="'.$product->video_cover.'">';
                 })
                 ->escapeColumns([])
                 ->make(true);

@@ -28,11 +28,31 @@ class PackageController extends Controller
         if ($validator->fails()) {
             return $this->apiResponse(null, $validator->errors(), 'simple', '422');
         }
+
         $data = $request->only('package_id');
         $package = Package::where('id', $request->package_id)->first();
-        $data['start_date'] = date('Y-m-d');
-        $data['end_date'] = date('Y-m-d', strtotime('+' . $package->period . 'month'));
         $data['user_id'] = user_api()->user()->id;
+
+        $userOldPackage = user_api()->user()->package;
+        if ($userOldPackage){
+            if ($userOldPackage->id == $package->id){
+                if (date('Y-m-d') >= $userOldPackage->end_date){
+                    $data['start_date'] = date('Y-m-d');
+                    $data['end_date'] = date('Y-m-d', strtotime('+' . $package->period . 'month'));
+                }else{
+                    $data['start_date'] = $userOldPackage->end_date;
+                    $data['end_date'] = date('Y-m-d', strtotime($userOldPackage->end_date .'+' . $package->period . 'month'));
+                }
+            }else{
+                $data['start_date'] = date('Y-m-d');
+                $data['end_date'] = date('Y-m-d', strtotime('+' . $package->period . 'month'));
+            }
+
+        }else{
+            $data['start_date'] = date('Y-m-d');
+            $data['end_date'] = date('Y-m-d', strtotime('+' . $package->period . 'month'));
+        }
+        UserPackage::where('user_id',user_api()->id())->delete();
         $userPackage = UserPackage::create($data);
 
         return $this->apiResponse($userPackage, '', 'simple');

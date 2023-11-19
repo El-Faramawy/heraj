@@ -191,7 +191,19 @@
                 <img width="100" height="100" id="blah" src="{{$product->image}}" alt="your image" />
             </div>
         </div>
-
+        <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+                <label >الفيديو</label>
+                <div class="input-group file-browser">
+                    <input type="text" class="form-control browse-file" placeholder="اختر" readonly>
+                    <label class="input-group-btn">
+                        <span class="btn btn-primary">
+                            تصفح <input accept="video/*" name="video" id="videoInp" type="file" style="display: none;" >
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
 
 </form>

@@ -185,8 +185,52 @@
                         </span>
                     </label>
                 </div>
-                {{--                                        <input accept="image/*" type='file'  name="logo"  class="form-control form-control-solid" />--}}
                 <img width="100" height="100" id="blah" src="" alt="your image" />
+            </div>
+        </div>
+        <!--end::Input group-->
+        <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+                <label >الصورة</label>
+                <div class="input-group file-browser">
+                    <input type="text" class="form-control browse-file" placeholder="اختر" readonly>
+                    <label class="input-group-btn">
+                        <span class="btn btn-primary">
+                            تصفح <input accept="image/*" name="civil_defense_license" id="civil_defense_licenseInp" type="file" style="display: none;" >
+                        </span>
+                    </label>
+                </div>
+                <img width="100" height="100" id="civil_defense_license" src="" alt="your image" />
+            </div>
+        </div>
+        <!--end::Input group-->
+        <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+                <label >الصورة</label>
+                <div class="input-group file-browser">
+                    <input type="text" class="form-control browse-file" placeholder="اختر" readonly>
+                    <label class="input-group-btn">
+                        <span class="btn btn-primary">
+                            تصفح <input accept="image/*" name="municipal_license" id="municipal_licenseInp" type="file" style="display: none;" >
+                        </span>
+                    </label>
+                </div>
+                <img width="100" height="100" id="municipal_license" src="" alt="your image" />
+            </div>
+        </div>
+        <!--end::Input group-->
+        <div class="col-lg-12 col-md-12">
+            <div class="form-group">
+                <label >الفيديو</label>
+                <div class="input-group file-browser">
+                    <input type="text" class="form-control browse-file" placeholder="اختر" readonly>
+                    <label class="input-group-btn">
+                        <span class="btn btn-primary">
+                            تصفح <input accept="video/*" name="video" id="videoInp" type="file" style="display: none;" >
+                        </span>
+                    </label>
+                </div>
+{{--                <img width="100" height="100" id="video" src="" alt="your image" />--}}
             </div>
         </div>
 
@@ -198,12 +242,28 @@
 <script>
     $(document).ready(function (){
         $('#blah').hide()
+        $('#civil_defense_license').hide()
+        $('#municipal_license').hide()
     })
     imgInp.onchange = evt => {
         $('#blah').show()
         const [file] = imgInp.files
         if (file) {
             blah.src = URL.createObjectURL(file)
+        }
+    }
+    civil_defense_licenseInp.onchange = evt => {
+        $('#civil_defense_license').show()
+        const [file] = civil_defense_licenseInp.files
+        if (file) {
+            civil_defense_license.src = URL.createObjectURL(file)
+        }
+    }
+    municipal_licenseInp.onchange = evt => {
+        $('#municipal_license').show()
+        const [file] = municipal_licenseInp.files
+        if (file) {
+            municipal_license.src = URL.createObjectURL(file)
         }
     }
 </script>

@@ -42,7 +42,6 @@
                                 <th class="text-white">النوع</th>
                                 <th class="text-white">السعر</th>
                                 <th class="text-white">العنوان</th>
-                                <th class="text-white">الوصف</th>
                                 <th class="text-white">رقم الهاتف</th>
                                 <th class="text-white">واتساب</th>
                                 <th class="text-white">نوع الناشر</th>
@@ -73,6 +72,7 @@
                                 <th class="text-white">رخصة البلديه</th>
                                 <th class="text-white">المحطة للايجار</th>
                                 <th class="text-white">المحطة مطورة</th>
+                                <th class="text-white">منتج مميز</th>
                                 <th class="text-white">الكومنتات</th>
                                 <th class="text-white">التقييمات</th>
                                 <th class="text-white">تحكم</th>
@@ -158,7 +158,6 @@
             {data: 'type', name: 'type'},
             {data: 'price', name: 'price'},
             {data: 'address', name: 'address'},
-            {data: 'description', name: 'description'},
             {data: 'phone', name: 'phone'},
             {data: 'whatsapp', name: 'whatsapp'},
             {data: 'publisher_type', name: 'publisher_type'},
@@ -189,6 +188,7 @@
             {data: 'municipal_license', name: 'municipal_license'},
             {data: 'for_rent', name: 'for_rent'},
             {data: 'developed', name: 'developed'},
+            {data: 'favourite', name: 'favourite'},
             {data: 'comment', name: 'comment'},
             {data: 'product_rate', name: 'product_rate'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -197,16 +197,60 @@
 
     </script>
     @include('layouts.admin.inc.ajax',['url'=>'products'])
-    {{--    <script>--}}
 
-    {{--        $(document).on('click', '#addBtn', function (e) {--}}
-    {{--            e.preventDefault();--}}
-    {{--            $('#form-load').html(loader)--}}
-    {{--            $('#Modal').modal('show')--}}
-    {{--            var id = "{{$id}}" ;--}}
-    {{--            setTimeout(function (){--}}
-    {{--                $('#form-load').load("{{route("products.create")}}?id="+ id)--}}
-    {{--            },100)--}}
-    {{--        });--}}
-    {{--    </script>--}}
+    <script>
+        $(document).on('click',".favourite",function (e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var url = "{{route('favourite_product')}}?id="+id;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                beforeSend: function () {
+                    $('#global-loader').show()
+                },
+                success: function (data) {
+
+                    window.setTimeout(function () {
+                        $('#global-loader').hide()
+                        if (data.code === 200) {
+                            my_toaster(data.message)
+                            $('#exportexample').DataTable().ajax.reload(null, false);
+                        }
+                    }, 100);
+
+                },
+                error: function (data) {
+                    $('#global-loader').hide()
+                    console.log(data)
+                    if (data.status === 500) {
+                        my_toaster('هناك خطأ','error')
+                    }
+
+                    if (data.status === 422) {
+                        var errors = $.parseJSON(data.responseText);
+
+                        $.each(errors, function (key, value) {
+                            if ($.isPlainObject(value)) {
+                                $.each(value, function (key, value) {
+                                    my_toaster(value,'error')
+                                });
+
+                            } else {
+
+                            }
+                        });
+                    }
+                    if (data.status == 421){
+                        my_toaster(data.message,'error')
+                    }
+
+                },//end error method
+
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+    </script>
 @endpush

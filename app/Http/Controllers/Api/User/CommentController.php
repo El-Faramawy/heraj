@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Traits\NotificationTrait;
 use App\Http\Traits\PaginateTrait;
 use App\Models\ProductComment;
 use App\Models\ProductReply;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Validator;
 class CommentController extends Controller
 {
     use  PaginateTrait;
+    use  NotificationTrait;
 
     public function add_comment(Request $request)
     {
@@ -28,6 +30,8 @@ class CommentController extends Controller
         $comment = ProductComment::create($data);
 
         $comment = ProductComment::where('id',$comment->id)->with('user')->first();
+        $this->sendFCMNotification([$comment->product->user_id], 'لديك كومنت جديد', $comment->comment );
+
         return $this->apiResponse($comment, 'done', 'simple');
     }
 
@@ -46,6 +50,7 @@ class CommentController extends Controller
         $comment = ProductReply::create($data);
 
         $comment = ProductReply::where('id',$comment->id)->with('user')->first();
+        $this->sendFCMNotification([$comment->user_id], 'لديك رد جديد', $comment->reply );
 
         return $this->apiResponse($comment, 'done', 'simple');
     }

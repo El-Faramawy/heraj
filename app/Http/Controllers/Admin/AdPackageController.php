@@ -3,18 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdPackage;
 use App\Models\Package;
+use App\Models\UserAdPackage;
 use App\Models\UserPackage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
-class PackageController extends Controller
+class AdPackageController extends Controller
 {
-    public function user_packages(Request $request)
+    public function user_ad_packages(Request $request)
     {
         if ($request->ajax()){
-            $data =UserPackage::where('user_id',$request->user_id)->latest()->get();
+            $data =UserAdPackage::where('user_id',$request->user_id)
+                ->latest()->get();
             return Datatables::of($data)
                 ->editColumn('package',function ($item){
                     return package_type($item->package_id) .'<br>'. $item->package->period . ' شهور ' ;
@@ -22,13 +25,13 @@ class PackageController extends Controller
                 ->escapeColumns([])
                 ->make(true);
         }
-        return view('Admin.Packages.user_packages');
+        return view('Admin.AdPackages.user_packages');
     }
 
     public function index(Request $request)
     {
         if ($request->ajax()){
-            $data =Package::whereIn('id',[1,4,7])->get();
+            $data =AdPackage::whereIn('id',[1,4,7])->get();
             return Datatables::of($data)
                 ->addColumn('action', function ($item) {
                     $action = '';
@@ -40,43 +43,32 @@ class PackageController extends Controller
 //                    }
                     return $action;
                 })
-                ->editColumn('close_chat',function ($item){
-                    return $item->close_chat ? 'نعم' : 'لا';
-                })
-                ->editColumn('show_vip',function ($item){
-                    return $item->show_vip ? 'نعم' : 'لا';
-                })
                 ->addColumn('type',function ($item){
                     return package_type($item->id) ;
                 })
                 ->escapeColumns([])
                 ->make(true);
         }
-        return view('Admin.Packages.index');
+        return view('Admin.AdPackages.index');
     }
 
-    public function edit(Package $package){
-        return view('Admin.Packages.parts.edit', compact('package'));
+    public function edit(AdPackage $adPackage){
+        return view('Admin.AdPackages.parts.edit', compact('adPackage'));
     }
 
-    public function update(Request $request, Package $package)
+    public function update(Request $request, AdPackage $adPackage)
     {
         $valedator = Validator::make($request->all(), [
                 'price'=>'required',
                 'period'=>'required',
-                'daily_ads'=>'required',
-//                'panner_ads'=>'required',
-                'close_chat'=>'required',
-                'free_months_number'=>'required',
-                'free_ads_number'=>'required',
-                'show_vip'=>'required',
+                'panner_ads'=>'required',
             ]
         );
         if ($valedator->fails())
             return response()->json(['messages' => $valedator->errors()->getMessages(), 'success' => 'false']);
 
         $data = $request->all();
-        $package->update($data);
+        $adPackage->update($data);
 
         return response()->json(
             [

@@ -16,7 +16,11 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()){
-            $data =Product::latest()->get();
+            if(isset($request->user_id)){
+                $data =Product::where('user_id',$request->user_id)->latest()->get();
+            }else{
+                $data =Product::latest()->get();
+            }
             return Datatables::of($data)
                 ->addColumn('action', function ($product) {
                     $action = '';
@@ -108,11 +112,13 @@ class ProductController extends Controller
                     return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
                 })
                 ->editColumn('for_rent',function ($item){
+                    if ($item->for_rent == null) return '';
                     $color = $item->for_rent == 1 ? "success" :"danger";
                     $text = $item->for_rent == 1 ? "نعم" :"لا";
                     return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
                 })
                 ->editColumn('developed',function ($item){
+                    if ($item->developed == null) return '';
                     $color = $item->developed == 1 ? "success" :"danger";
                     $text = $item->developed == 1 ? "نعم" :"لا";
                     return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
@@ -121,6 +127,13 @@ class ProductController extends Controller
                     $color = $item->show_price == 1 ? "success" :"danger";
                     $text = $item->show_price == 1 ? "نعم" :"لا";
                     return '<span class="text-center fw-3 badge badge-sm badge-' . $color . '" style="color:white">'.$text.'</a>';
+                })
+                ->editColumn('favourite', function ($item) {
+                    $color = $item->favourite == 1 ? "warning" : "dark" ;
+                    return '<span style="font-size: x-large;" class="favourite fw-1  text-' . $color . '"
+                    data-id="' . $item->id . '" style="cursor: pointer;">
+                    <i class="py-2 fw-1  fa fa-star text-' . $color . '" ></i></span>
+                    ' ;
                 })
                 ->addColumn('address', function ($item) {
                     $text = "الذهاب للعنوان";
@@ -167,6 +180,18 @@ class ProductController extends Controller
                 'message' => 'تم الحذف بنجاح'
             ]);
     }
-
+    /////////////////////////////////////////////////////////
+    public function favourite_product(Request $request)
+    {
+        $product = Product::where('id', $request->id)->first();
+        $text = $product->favourite == 1 ? "تم الحذف من المنتجات المفضلة بنجاح" : "تم الاضافة للمنتجات المفضلة بنجاح";
+        $product->favourite = $product->favourite == 1 ? 0 : 1;
+        $product->save();
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => $text
+            ]);
+    }
 
 }

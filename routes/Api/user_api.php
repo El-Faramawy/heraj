@@ -7,8 +7,10 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
 
     /* ---------------------- Authentication -------------------*/
     Route::post('login','AuthController@login');
+    Route::post('checkPhoneRegister','AuthController@checkPhoneRegister');
     Route::post('register', 'AuthController@register');
-
+Route::post('get_code','AuthController@get_code');
+    Route::post('ConfirmCode','AuthController@ConfirmCode');
     Route::get('checkPhone', 'ForgetPasswordController@checkPhone');
     Route::post('update_password', 'ForgetPasswordController@update_password');
 
@@ -65,9 +67,17 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
             Route::post('addPannerAd', 'PackageController@addPannerAd');
             Route::post('deletePannerAd', 'PackageController@deletePannerAd');
         });
+        /* ---------------------- ad_packages -------------------*/
+        Route::group(['prefix' => 'ad_packages'], function () {
+            Route::get('/', 'PackageController@ad_packages');
+            Route::post('store', 'PackageController@ad_store');
+        });
 
         /* ---------------------- follow -------------------*/
         Route::post('add_delete_follow','FollowController@add_delete_follow');
+
+        /* ---------------------- reports -------------------*/
+        Route::post('add_report','ReportController@add_report');
 
         /* ---------------------- favourite -------------------*/
         Route::post('add_delete_favourite','FavouriteController@add_delete_favourite');
@@ -85,4 +95,6 @@ Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
 
 
     });
+    Route::post('payment','PackageController@create_payment');
 });
+

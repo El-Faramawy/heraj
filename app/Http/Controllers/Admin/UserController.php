@@ -21,7 +21,11 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $users = User::latest()->get();
+            if (isset($request->user_id)){
+                $users = User::where('id',$request->user_id)->get();
+            }else{
+                $users = User::latest()->get();
+            }
             return Datatables::of($users)
                 ->addColumn('action', function ($user) {
 //                    if(in_array(7,admin()->user()->permission_ids)) {
@@ -40,6 +44,32 @@ class UserController extends Controller
                                 </span>
                             </span>
                             </button>';
+                })
+                ->addColumn('ad_packages', function ($user) {
+                    return '<a  class="btn btn-icon btn-bg-light btn-info btn-sm me-1 "
+                            href="'.route("user_ad_packages.index","user_id=".$user->id).'" >
+                            <span class="svg-icon svg-icon-3" style="font-size:12px">
+                                <span class="svg-icon svg-icon-3">
+                                    <i class="fa fa-bars "></i>
+                                </span>
+                            </span>
+                            </button>';
+                })
+                ->addColumn('products', function ($user) {
+                    return '<a  class="btn btn-icon btn-bg-light btn-success btn-sm me-1 "
+                            href="'.route("products.index","user_id=".$user->id).'" >
+                            <span class="svg-icon svg-icon-3" style="font-size:12px">
+                                <span class="svg-icon svg-icon-3">
+                                    <i class="fa fa-bars "></i>
+                                </span>
+                            </span>
+                            </button>';
+                })
+                ->editColumn('block',function ($user){
+                    $color = $user->block == "yes" ? "danger" :"dark";
+                    $text = $user->block == "yes" ? "الغاء حظر" :"حظر";
+                    $block =in_array(10,admin()->user()->permission_ids)? "block" : " ";
+                    return '<a class="'. $block .' text-center fw-3  text-' . $color . '" data-id="' . $user->id . '" data-text="' . $text . '" style="cursor: pointer"><i class="py-2 fw-3  fa fa-ban text-' . $color . '" ></i></a>';
                 })
                 ->editColumn('image', function ($user) {
                     return '<img alt="image" class="img list-thumbnail border-0" style="width:100px;border-radius:10px" onclick="window.open(this.src)" src="' . $user->image . '">';
@@ -115,6 +145,19 @@ class UserController extends Controller
             [
                 'code' => 200,
                 'message' => 'تم الحذف بنجاح'
+            ]);
+    }
+    ################ block user #################
+    public function block($id)
+    {
+        $user = User::where('id',$id)->first();
+        $text = $user->block == "yes" ? "تم الغاء الحظر بنجاح" :"تم الحظر بنجاح";
+        $user->block = $user->block =='yes'?'no':'yes';
+        $user->save();
+        return response()->json(
+            [
+                'code' => 200,
+                'message' => $text
             ]);
     }
 

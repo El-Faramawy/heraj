@@ -18,8 +18,16 @@ Route::get('/', function (){
 
 // ****************** web view *****************************
 
-Route::get('privacy','TermsController@privacy')->name('privacy');
-Route::get('about','TermsController@about')->name('about');
-Route::get('terms','TermsController@terms')->name('terms');
+Route::get('terms',function (){
+    return view('WebView.terms', ['setting' => setting()]);
+})->name('terms');
+
+Route::get('about',function (){
+    return view('WebView.about', ['setting' => setting()]);
+})->name('about');
+
+Route::get('privacy',function (){
+    return view('WebView.privacy', ['setting' => setting()]);
+})->name('privacy');
 
 

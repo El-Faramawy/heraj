@@ -19,4 +19,9 @@ class ProductComment extends Model
     {
         return $this->belongsTo(User::class,'user_id');
     }
+    //===================  product ===========================
+    public function product()
+    {
+        return $this->belongsTo(Product::class,'product_id');
+    }
 }

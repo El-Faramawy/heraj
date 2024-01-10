@@ -8,10 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Http\Traits\SmsTrait;
 
 class ForgetPasswordController extends Controller
 {
-    use PaginateTrait;
+    use PaginateTrait,SmsTrait;
 
     //===========================================
     public function update_password(Request $request)
@@ -42,7 +43,13 @@ class ForgetPasswordController extends Controller
             return $this->apiResponse(null, $validator->errors(), 'simple', '422');
         }
         $user = User::where('phone', $request->phone)->first();
-        return $this->apiResponse($user, '', 'simple');
+        if($user){
+         $code = rand('100000', '999999');
+            $this->sendOtp(strval($user->phone_code.$request->phone),' رمز تاكيد الهاتف لتطبيق Haraj Stations هو '.$code);
+        return $this->apiResponse(["code2"=>$code,"user"=>$user,"code"=>Hash::make($code)], '', 'simple');   
+        }
+        return $this->apiResponse('', 'هذا الرقم غير موجود', 'simple',401);   
+        
     }
 
 

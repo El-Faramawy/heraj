@@ -7,12 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\PaginateTrait;
 use App\Http\Traits\PhotoTrait;
 use App\Http\Traits\WithRelationTrait;
-use App\Models\AdPackage;
 use App\Models\Category;
 use App\Models\Package;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\UserAdPackage;
 use App\Models\UserPackage;
 use App\Models\UserRate;
 use Illuminate\Http\Request;
@@ -61,45 +59,6 @@ class PackageController extends Controller
     }
 
     //================================================================
-    public function ad_store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'package_id' => 'required|exists:ad_packages,id',
-        ]);
-        if ($validator->fails()) {
-            return $this->apiResponse(null, $validator->errors(), 'simple', '422');
-        }
-
-        $data = $request->only('package_id');
-        $package = AdPackage::where('id', $request->package_id)->first();
-        $data['user_id'] = user_api()->user()->id;
-
-        $userOldPackage = user_api()->user()->ad_package;
-        if ($userOldPackage){
-            if ($userOldPackage->id == $package->id){
-                if (date('Y-m-d') >= $userOldPackage->end_date){
-                    $data['start_date'] = date('Y-m-d');
-                    $data['end_date'] = date('Y-m-d', strtotime('+' . $package->period . 'month'));
-                }else{
-                    $data['start_date'] = $userOldPackage->end_date;
-                    $data['end_date'] = date('Y-m-d', strtotime($userOldPackage->end_date .'+' . $package->period . 'month'));
-                }
-            }else{
-                $data['start_date'] = date('Y-m-d');
-                $data['end_date'] = date('Y-m-d', strtotime('+' . $package->period . 'month'));
-            }
-
-        }else{
-            $data['start_date'] = date('Y-m-d');
-            $data['end_date'] = date('Y-m-d', strtotime('+' . $package->period . 'month'));
-        }
-        UserAdPackage::where('user_id',user_api()->id())->delete();
-        $userAdPackage = UserAdPackage::create($data);
-
-        return $this->apiResponse($userAdPackage, '', 'simple');
-    }
-
-    //================================================================
     public function addPannerAd(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -110,8 +69,8 @@ class PackageController extends Controller
         }
         $product = Product::where('id', $request->product_id)->first();
         $productCount = Product::where(['has_ad' => 1, 'user_id' => user_api()->id()])->count();
-        if (user_api()->user()->ad_package) {
-            if (user_api()->user()->ad_package->panner_ads > $productCount) {
+        if (user_api()->user()->package) {
+            if (user_api()->user()->package->panner_ads > $productCount) {
                 $product->update(['has_ad'=> 1]);
                 return $this->apiResponse($product, '', 'simple');
             } else {
@@ -141,68 +100,5 @@ class PackageController extends Controller
     {
         $data = Package::query();
         return $this->apiResponse($data);
-    }
-    //================================================================
-    public function ad_packages()
-    {
-        $data = AdPackage::query();
-        return $this->apiResponse($data);
-    }
-    public function create_payment(Request $request){
-        $currentTimestamp = time();
-        $url = 'https://secure.telr.com/gateway/order.json';
-
-$data = [
-    "method" => "create",
-    "store" => 29511,
-    "authkey" => "Rfqk-czBQ4^XTXPf",
-    "framed" => 0,
-    "order" => [
-        "cartid" => $currentTimestamp,
-        "test" => "1",
-        "amount" => $request->amount,
-        "currency" => "SAR",
-        "description" => "My purchase"
-    ],
-    "customer"=>[
-        "email"=>$request->email,
-        "phone"=>$request->phone,
-        "ref"=>"",
-        "name"=>[
-            "forenames"=>$request->name,
-            "surname"=>"",
-            ],
-        "address"=>[
-            "line1"=>"SA",
-            "line2"=>"Saudi Arabia",
-            "city"=>"Riyadh",
-            "country"=>"Saudi Arabia",
-            "state"=>"Riyadh",
-            "areacode"=>"",
-            "mobile"=>$request->phone
-            ],
-        ],
-    "return" => [
-        "authorised" => "https://www.mysite.com/success",
-        "declined" => "https://www.mysite.com/failed",
-        "cancelled" => "https://www.mysite.com/cancelled"
-    ]
-];
-
-$ch = curl_init();
-
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json',
-    'accept: application/json',
-]);
-
-$response = curl_exec($ch);
-
-curl_close($ch);
-        return $this->apiResponse(json_decode($response), '', 'simple');
     }
 }

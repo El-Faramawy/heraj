@@ -48,7 +48,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     protected $guarded = [];
-    protected $appends = ['package','is_follow'];
+    protected $appends = ['package','ad_package','is_follow'];
 
     public function getImageAttribute(){
         return  get_file($this->attributes['image']);
@@ -71,6 +71,21 @@ class User extends Authenticatable implements JWTSubject
             })
             ->with('package')->first();
         if ($userPackage){
+            $userPackage->package->start_date = $userPackage->start_date;
+            $userPackage->package->end_date = $userPackage->end_date;
+            return $userPackage->package;
+        }
+        return null;
+    }
+    public function getAdPackageAttribute(){
+        $userPackage = UserAdPackage::where('user_id',$this->attributes['id'])
+            ->where(function ($q){
+                $q/*->where('start_date','<=',date('Y-m-d'))*/
+                ->where('end_date','>=',date('Y-m-d'));
+            })
+            ->with('package')->first();
+        if ($userPackage){
+            $userPackage->package->start_date = $userPackage->start_date;
             $userPackage->package->end_date = $userPackage->end_date;
             return $userPackage->package;
         }
@@ -82,6 +97,9 @@ class User extends Authenticatable implements JWTSubject
     }
     public function company_products(){
         return $this->hasMany(Product::class)->where('type','company');
+    }
+    public function products(){
+        return $this->hasMany(Product::class,'user_id');
     }
 
     public function chat_messages(){

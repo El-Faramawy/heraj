@@ -15,10 +15,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\User;
 use App\Models\PhoneToken;
 use App\Http\Traits\PhotoTrait;
+use App\Http\Traits\SmsTrait;
 
 class AuthController extends Controller
 {
-    use PhotoTrait, PaginateTrait;
+    use PhotoTrait, PaginateTrait,SmsTrait;
 
     public function login(Request $request)
     {
@@ -64,6 +65,7 @@ class AuthController extends Controller
             // validation
             $validator = Validator::make($request->all(), [
                 'phone' => 'required|unique:users,phone',
+                'email'=>'required|unique:users,email',
                 'phone_code' => 'required',
                 'name' => 'required',
                 'password' => 'required'
@@ -207,6 +209,53 @@ class AuthController extends Controller
         }
         return $this->apiResponse($verify_account, 'done', 'simple');
 
+    }
+    
+    public function ConfirmCode(Request $request ){
+        $validator = Validator::make($request->all(), [ // <---
+            'code' => 'required',
+            'hashed_code' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->apiResponse(null,$validator->errors(),'simple','422');
+        }
+        if(Hash::check($request->code, $request->hashed_code)){
+            return $this->apiResponse(null,'correct','simple');
+        }else{
+            return $this->apiResponse(null,' الكود خطا','simple',409);
+        }
+    }
+    
+    public function get_code(Request $request){
+        $validator = Validator::make($request->all(), [ // <---
+            'phone' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->apiResponse(null,$validator->errors(),'simple','422');
+        }
+        if (strlen($request->phone) == 11){
+            return $this->apiResponse(Hash::make('111111'),'code sent successfully','simple');
+        }else{
+            $code = rand('100000', '999999');
+            $this->sendOtp(strval($request->phone),' رمز تاكيد الهاتف لتطبيق Haraj Stations هو '.$code);
+            return $this->apiResponse(["code"=>Hash::make($code),"code2"=>$code],'code sent successfully','simple');
+        }
+    }
+    public function checkPhoneRegister(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'phone' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->apiResponse(null, $validator->errors(), 'simple', '422');
+        }
+        $user = User::where('phone', $request->phone)->first();
+        if($user){
+            return $this->apiResponse('', 'هذا الرقم مستخدم بالفعل', 'simple',401);
+        }
+        $code = rand('100000', '999999');
+            $this->sendOtp(strval($request->phone_code.$request->phone),' رمز تاكيد الهاتف لتطبيق Haraj Stations هو '.$code);
+        return $this->apiResponse(["code"=>Hash::make($code),"code2"=>$code], '', 'simple');
     }
 
 

@@ -61,10 +61,12 @@ class HomeController extends Controller
         }
         if (isset($request->type)) {
             $products->where('type', $request->type);
-        }else {
-            $products->where('type', ProductTypeEnum::USER);
+//            if ($request->type == ProductTypeEnum::COMPANY){
+//                $products->select('*')->groupBy('user_id');
+//            }
         }
-        $products = $products->with('user', 'category', 'sub_category', 'city');
+        $products = $products->with('user', 'category', 'sub_category', 'city')
+            ->orderBy('favourite','desc');
         return $this->apiResponse($products);
     }
     //================================================================

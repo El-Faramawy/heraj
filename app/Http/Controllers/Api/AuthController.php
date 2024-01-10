@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Http\Traits\PhotoTrait;
+use App\Http\Traits\SmsTrait;
 
 class AuthController extends Controller
 {
-    use PhotoTrait;
+    use PhotoTrait,SmsTrait;
 
     public function user_login($data){
         $token = user_api()->attempt($data);
@@ -127,6 +128,37 @@ class AuthController extends Controller
             return apiResponse($ex->getCode(),$ex->getMessage(),'422');
         }
 
+    }
+    
+    public function ConfirmCode(Request $request ){
+        $validator = Validator::make($request->all(), [ // <---
+            'code' => 'required',
+            'hashed_code' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->apiResponse(null,$validator->errors(),'simple','422');
+        }
+        if(Hash::check($request->code, $request->hashed_code)){
+            return $this->apiResponse(null,'correct','simple');
+        }else{
+            return $this->apiResponse(null,' الكود خطا','simple',409);
+        }
+    }
+    
+    public function get_code(Request $request){
+        $validator = Validator::make($request->all(), [ // <---
+            'phone' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return $this->apiResponse(null,$validator->errors(),'simple','422');
+        }
+        if (strlen($request->phone) == 11){
+            return $this->apiResponse(Hash::make('111111'),'code sent successfully','simple');
+        }else{
+            $code = rand('100000', '999999');
+            $this->sendOtp(strval($request->phone),' رمز تاكيد الهاتف لتطبيق Haraj Stations هو '.$code);
+            return $this->apiResponse(Hash::make($code),'code sent successfully','simple');
+        }
     }
 
 

@@ -6,10 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\PaginateTrait;
 use App\Http\Traits\PhotoTrait;
 use App\Http\Traits\WithRelationTrait;
-use App\Models\Addition;
-use App\Models\AdditionCategory;
 use App\Models\Category;
-use App\Models\Market;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Rate;
@@ -30,7 +27,7 @@ class ProductController extends Controller
             'area_id' => 'required|exists:areas,id',
             'category_id' => 'required|exists:categories,id',
             'sub_category_id' => 'exists:sub_categories,id',
-            'price' => 'required',
+            // 'price' => 'required',
             'name' => 'required',
 //            'video' => 'file|size:5000',
         ]);
@@ -68,12 +65,12 @@ class ProductController extends Controller
                 }
             }
         }
-        if (isset($request->civil_defense_license)){
-            $product['civil_defense_license'] = $this->saveImage($request->civil_defense_license, 'uploads/product');
-        }
-        if (isset($request->municipal_license)){
-            $product['municipal_license'] = $this->saveImage($request->municipal_license, 'uploads/product');
-        }
+        // if (isset($request->civil_defense_license)){
+        //     $product['civil_defense_license'] = $this->saveImage($request->civil_defense_license, 'uploads/product');
+        // }
+        // if (isset($request->municipal_license)){
+        //     $product['municipal_license'] = $this->saveImage($request->municipal_license, 'uploads/product');
+        // }
         if (isset($request->video_cover)){
             $product['video_cover'] = $this->saveImage($request->video_cover, 'uploads/product');
         }
@@ -96,7 +93,7 @@ class ProductController extends Controller
             'area_id' => 'required|exists:areas,id',
             'category_id' => 'required|exists:categories,id',
             'sub_category_id' => 'exists:sub_categories,id',
-            'price' => 'required',
+            // 'price' => 'required',
             'name' => 'required',
         ]);
         if ($validator->fails()) {
@@ -127,12 +124,12 @@ class ProductController extends Controller
                 }
             }
         }
-        if (isset($request->civil_defense_license)){
-            $product['civil_defense_license'] = $this->saveImage($request->civil_defense_license, 'uploads/product',$product['civil_defense_license']);
-        }
-        if (isset($request->municipal_license)){
-            $product['municipal_license'] = $this->saveImage($request->municipal_license, 'uploads/product',$product['municipal_license']);
-        }
+        // if (isset($request->civil_defense_license)){
+        //     $product['civil_defense_license'] = $this->saveImage($request->civil_defense_license, 'uploads/product',$product['civil_defense_license']);
+        // }
+        // if (isset($request->municipal_license)){
+        //     $product['municipal_license'] = $this->saveImage($request->municipal_license, 'uploads/product',$product['municipal_license']);
+        // }
         if (isset($request->video_cover)){
             $product['video_cover'] = $this->saveImage($request->video_cover, 'uploads/product',$product['video_cover']);
         }
@@ -159,10 +156,10 @@ class ProductController extends Controller
         if ($validator->fails()) {
             return $this->apiResponse(null, $validator->errors(), 'simple', '422');
         }
-        $product = Product::where('id',$request->id)->with('user', 'category', 'sub_category', 'city','images','comments.user','comments.replies.user')->first();
+        $product = Product::where('id',$request->id)->with('user', 'category', 'sub_category', 'city','images','area','comments.user','comments.replies.user')->first();
         $product->similar_products = Product::
             where([['category_id',$product->category_id] , ['id' , '!=' , $product->id]])
-            ->with('user', 'category', 'sub_category', 'city','images')
+            ->with('user', 'category', 'sub_category', 'city', 'images')
             ->inRandomOrder()->limit(9)/*->select('id','image')*/->get();
         if (user_api()->check()){
             $product->is_rate = Rate::where(['product_id'=>$product->id , 'user_id'=>user_api()->id()])->first();
@@ -182,13 +179,13 @@ class ProductController extends Controller
             return $this->apiResponse(null, $validator->errors(), 'simple', '422');
         }
         $user = User::where('id', $request->id)->
-        with('user_products.category', 'user_products.sub_category', 'user_products.city')->first();
-        $category_ids = array_unique($user->user_products->pluck('category_id')->toArray());
-        $user->categories = Category::whereIn('id', $category_ids)->get();
-        foreach ($user->categories as $category) {
-            $category->products = $user->user_products()->where('category_id', $category->id)
-                ->with('category', 'sub_category', 'city')->get();
-        }
+        with('products.category','products.user', 'products.sub_category', 'products.city')->first();
+        // $category_ids = array_unique($user->products->pluck('category_id')->toArray());
+        // $user->categories = Category::whereIn('id', $category_ids)->get();
+        // foreach ($user->categories as $category) {
+        //     $category->products = $user->products()->where('category_id', $category->id)
+        //         ->with('category', 'sub_category', 'city')->get();
+        // }
         return $this->apiResponse($user, '', 'simple');
     }
     //===================================================

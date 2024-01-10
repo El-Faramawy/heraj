@@ -43,6 +43,8 @@
         //======================== addBtn =============================
 
     </script>
+{{--    @include('layouts.admin.inc.ajax',['url'=>'user_ad_packages'])--}}
+</script>
     <script type="text/javascript" src="https://fastly.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js?{{time()}}"></script>
     <script type="text/javascript" src="https://fastly.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js?{{time()}}"></script>
     <script type="text/javascript" src="https://fastly.datatables.net/v/bs4/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.js?{{time()}}"></script>
@@ -104,7 +106,5 @@
 
         });
     </script>
-
-{{--    @include('layouts.admin.inc.ajax',['url'=>'user_packages'])--}}
 
 @endpush

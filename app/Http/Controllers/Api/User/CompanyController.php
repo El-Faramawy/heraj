@@ -28,7 +28,7 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'company_name' => 'required',
+            // 'company_name' => 'required',
             'company_username' => 'required|unique:users,company_username,' . user_api()->user()->id,
             'company_description' => 'required',
 //            'company_image' => 'required',
@@ -42,6 +42,8 @@ class CompanyController extends Controller
         $user = user_api()->user();
         if (isset($request->company_image))
             $data['company_image'] = $this->saveImage($request->company_image, 'uploads/company', $user->getAttributes()['company_image']);
+            if (isset($request->image))
+            $data['image'] = $this->saveImage($request->image, 'uploads/user', $user->getAttributes()['image']);
         if (isset($request->company_panner))
             $data['company_panner'] = $this->saveImage($request->company_panner, 'uploads/company', $user->getAttributes()['company_panner']);
 
@@ -103,10 +105,10 @@ class CompanyController extends Controller
         if ($validator->fails()) {
             return $this->apiResponse(null, $validator->errors(), 'simple', '422');
         }
-        $rate = UserRate::where(['rated_user_id' => $request->user_id, 'user_id' => user_api()->id()])->first();
-        if ($rate) {
-            return $this->apiResponse(null, 'لقد سجلت تقييمك من قبل', 'simple', '422');
-        }
+        // $rate = UserRate::where(['rated_user_id' => $request->user_id, 'user_id' => user_api()->id()])->first();
+        // if ($rate) {
+        //     return $this->apiResponse(null, 'لقد سجلت تقييمك من قبل', 'simple', '422');
+        // }
         $data = $request->all();
         $data['user_id'] = user_api()->id();
         $data['rated_user_id'] = $request->user_id;

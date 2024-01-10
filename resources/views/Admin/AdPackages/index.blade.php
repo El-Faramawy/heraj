@@ -1,26 +1,21 @@
 @extends('layouts.admin.app')
-@section('page_title') الباقات @endsection
+@section('page_title') باقات الاعلانات @endsection
 @section('content')
     <div class="row">
         <div class="col-md-12 col-lg-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">الباقات</h3>
+                    <h3 class="card-title">باقات الاعلانات</h3>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
+                    <div class="{{--table-responsive--}}">
                         <table id="exportexample" class="table table-striped table-responsive-lg  card-table table-vcenter text-nowrap mb-0 table-primary align-items-center mb-0">
                             <thead class="bg-primary text-white">
                             <tr>
                                 <th class="text-white">النوع</th>
                                 <th class="text-white">عدد الشهور</th>
                                 <th class="text-white">السعر</th>
-                                <th class="text-white">عدد اعلانات اليوم</th>
-{{--                                <th class="text-white">عدد اعلانات البانر</th>--}}
-                                <th class="text-white">اغلاق الشات</th>
-                                <th class="text-white">عدد الاشهر المجانية</th>
-                                <th class="text-white">عدد التصاميم المجانية</th>
-                                <th class="text-white">اظهار العضوية</th>
+                                <th class="text-white">عدد اعلانات البانر</th>
                                 <th class="text-white">تحكم</th>
                             </tr>
                             </thead>
@@ -44,7 +39,7 @@
                 <!--begin::Modal header-->
                 <div class="modal-header">
                     <!--begin::Modal title-->
-                    <h2>الباقات</h2>
+                    <h2>باقات الاعلانات</h2>
                     <!--end::Modal title-->
                     <!--begin::Close-->
                     <div class="btn btn-sm btn-icon btn-active-color-primary" style="cursor: pointer" data-dismiss="modal" aria-label="Close">
@@ -88,17 +83,12 @@
             {data: 'type', name: 'type'},
             {data: 'period', name: 'period'},
             {data: 'price', name: 'price'},
-            {data: 'daily_ads', name: 'daily_ads'},
-            // {data: 'panner_ads', name: 'panner_ads'},
-            {data: 'close_chat', name: 'close_chat'},
-            {data: 'free_months_number', name: 'free_months_number'},
-            {data: 'free_ads_number', name: 'free_ads_number'},
-            {data: 'show_vip', name: 'show_vip'},
+            {data: 'panner_ads', name: 'panner_ads'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ];
         //======================== addBtn =============================
 
     </script>
-    @include('layouts.admin.inc.ajax',['url'=>'packages'])
+    @include('layouts.admin.inc.ajax',['url'=>'ad_packages'])
 
 @endpush

@@ -14,12 +14,12 @@ class Product extends Model
     public function getImageAttribute(){
         return  get_file($this->attributes['image']);
     }
-    public function getCivilDefenseLicenseAttribute(){
-        return  get_file($this->attributes['civil_defense_license']);
-    }
-    public function getMunicipalLicenseAttribute(){
-        return  get_file($this->attributes['municipal_license']);
-    }
+    // public function getCivilDefenseLicenseAttribute(){
+    //     return  get_file($this->attributes['civil_defense_license']);
+    // }
+    // public function getMunicipalLicenseAttribute(){
+    //     return  get_file($this->attributes['municipal_license']);
+    // }
     public function getVideoAttribute(){
         return  get_file($this->attributes['video']);
     }

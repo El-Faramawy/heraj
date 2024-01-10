@@ -63,21 +63,19 @@
                     <span class="side-menu__label">المدن</span>
                 </a>
             </li>
-{{--        @endif--}}
-{{--        @if(in_array(60,admin()->user()->permission_ids))--}}
-{{--            <li class="slide">--}}
-{{--                <a class="side-menu__item" href="{{route('sub_categories.index')}}">--}}
-{{--                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"--}}
-{{--                         class="side-menu__icon">--}}
-{{--                        <path d="M0 0h24v24H0V0z" fill="none"/>--}}
-{{--                        <path d="M5 5h4v4H5zm10 10h4v4h-4zM5 15h4v4H5zM16.66 4.52l-2.83 2.82 2.83 2.83 2.83-2.83z"--}}
-{{--                              opacity=".3"/>--}}
-{{--                        <path--}}
-{{--                            d="M16.66 1.69L11 7.34 16.66 13l5.66-5.66-5.66-5.65zm-2.83 5.65l2.83-2.83 2.83 2.83-2.83 2.83-2.83-2.83zM3 3v8h8V3H3zm6 6H5V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8-2v8h8v-8h-8zm6 6h-4v-4h4v4z"/>--}}
-{{--                    </svg>--}}
-{{--                    <span class="side-menu__label">الاقسام الفرعية</span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
+            <li class="slide">
+                <a class="side-menu__item" href="{{route('reports.index')}}">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"
+                         class="side-menu__icon">
+                        <path d="M0 0h24v24H0V0z" fill="none"/>
+                        <path d="M5 5h4v4H5zm10 10h4v4h-4zM5 15h4v4H5zM16.66 4.52l-2.83 2.82 2.83 2.83 2.83-2.83z"
+                              opacity=".3"/>
+                        <path
+                            d="M16.66 1.69L11 7.34 16.66 13l5.66-5.66-5.66-5.65zm-2.83 5.65l2.83-2.83 2.83 2.83-2.83 2.83-2.83-2.83zM3 3v8h8V3H3zm6 6H5V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8-2v8h8v-8h-8zm6 6h-4v-4h4v4z"/>
+                    </svg>
+                    <span class="side-menu__label">الشكاوى</span>
+                </a>
+            </li>
 {{--        @endif--}}
 {{--        @if(in_array(72,admin()->user()->permission_ids))--}}
 {{--            <li class="slide">--}}
@@ -132,6 +130,20 @@
                             d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm-1 6H5v-4h14v4zm-12-.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 6H5V5h14v4zM7 8.5c.83 0 1.5-.67 1.5-1.5S7.83 5.5 7 5.5 5.5 6.17 5.5 7 6.17 8.5 7 8.5z"/>
                     </svg>
                     <span class="side-menu__label">الباقات</span>
+                </a>
+            </li>
+            <li class="slide">
+                <a class="side-menu__item" href="{{route('ad_packages.index')}}">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"
+                         class="side-menu__icon">
+                        <path d="M0 0h24v24H0V0z" fill="none"/>
+                        <path
+                            d="M5 9h14V5H5v4zm2-3.5c.83 0 1.5.67 1.5 1.5S7.83 8.5 7 8.5 5.5 7.83 5.5 7 6.17 5.5 7 5.5zM5 19h14v-4H5v4zm2-3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5z"
+                            opacity=".3"/>
+                        <path
+                            d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm-1 6H5v-4h14v4zm-12-.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 6H5V5h14v4zM7 8.5c.83 0 1.5-.67 1.5-1.5S7.83 5.5 7 5.5 5.5 6.17 5.5 7 6.17 8.5 7 8.5z"/>
+                    </svg>
+                    <span class="side-menu__label">باقات الاعلانات</span>
                 </a>
             </li>
             <li class="slide">

@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->integer('views')->default(0);
             $table->integer('rate')->default(0);
+            $table->string('phone')->unique();
+
             $table->rememberToken();
             $table->timestamps();
         });

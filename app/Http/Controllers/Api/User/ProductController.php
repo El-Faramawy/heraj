@@ -36,6 +36,7 @@ class ProductController extends Controller
         }
         $productCount = Product::whereDate('created_at',date('Y-m-d'))
             ->where('user_id',user_api()->id())->count();
+            $productCount2 = Product::where('user_id',user_api()->id())->count();
         if (user_api()->user()->package){
             if (user_api()->user()->package->daily_ads > $productCount){
                 $data = $request->except('images');
@@ -44,12 +45,12 @@ class ProductController extends Controller
             }else {
                 return $this->apiResponse(null, 'نفذت محاولاتك لاضافة اعلان اليوم', 'simple', '422');
             }
-        }elseif ($productCount == 0){
+        }elseif ($productCount2 <2){
             $data = $request->except('images');
             $data['user_id'] = user_api()->id();
             $product = Product::create($data);
         }else{
-            return $this->apiResponse(null, 'نفذت محاولاتك لاضافة اعلان اليوم', 'simple', '422');
+            return $this->apiResponse(null, 'نفذت محاولاتك لاضافة اعلان ', 'simple', '422');
         }
 
 
